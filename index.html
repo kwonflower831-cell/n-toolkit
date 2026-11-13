@@ -1,0 +1,599 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>N-Toolkit | N잡러·크리에이터·청년 올인원 유틸리티 포털</title>
+  
+  <!-- SEO & 바이럴 SNS 공유 (Open Graph) 메타 태그 -->
+  <meta name="description" content="프리랜서 3.3% 계산기, 외주 견적 시뮬레이터, 인스타 줄바꿈 변환기, 쇼츠 자막 속도 계산기, 주휴수당 및 실업급여 계산기까지 한곳에서!">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="N-Toolkit | 1인 사업가·크리에이터·청년 올인원 작업실">
+  <meta property="og:description" content="복잡한 계산과 작업은 툴에 맡기세요. 3.3% 계산기부터 쇼츠 대본 글자수, 주휴수당 계산기까지 100% 무료!">
+  <meta property="og:image" content="https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?auto=format&fit=crop&w=1200&q=80">
+  <meta name="twitter:card" content="summary_large_image">
+  
+  <!-- Tailwind CSS & FontAwesome -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    @import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css');
+    body { font-family: 'Pretendard', sans-serif; }
+    .cat-btn-active { background-color: #2563eb; color: #ffffff; font-weight: 700; box-shadow: 0 4px 6px -1px rgba(37, 99, 235, 0.2); }
+  </style>
+</head>
+<body class="bg-slate-50 text-slate-800 min-h-screen flex flex-col justify-between">
+
+  <!-- 상단 네비게이션 헤더 -->
+  <header class="bg-white border-b border-slate-200 sticky top-0 z-30 shadow-xs">
+    <div class="max-w-4xl mx-auto px-4 py-3 flex items-center justify-between">
+      <div class="flex items-center space-x-2.5">
+        <span class="bg-gradient-to-tr from-blue-600 to-indigo-600 text-white rounded-xl text-lg font-black flex items-center justify-center w-9 h-9 shadow-sm shadow-blue-200">N</span>
+        <div>
+          <h1 class="text-lg font-bold tracking-tight text-slate-900 leading-none">N-Toolkit</h1>
+          <span class="text-xs text-slate-400">1인 사업가 · 크리에이터 · 사회초년생 올인원 포털</span>
+        </div>
+      </div>
+      <div class="flex items-center gap-2">
+        <button onclick="shareLink()" class="text-xs font-semibold bg-blue-50 hover:bg-blue-100 text-blue-700 px-3 py-2 rounded-xl flex items-center gap-1.5 transition">
+          <i class="fa-solid fa-share-nodes"></i> 공유
+        </button>
+      </div>
+    </div>
+
+    <!-- 3대 카테고리 전환 바 -->
+    <div class="bg-slate-100/80 border-t border-slate-200 px-4 py-2">
+      <div class="max-w-4xl mx-auto flex gap-2 overflow-x-auto text-xs font-medium">
+        <button onclick="switchCategory('freelance')" id="cat-btn-freelance" class="cat-btn px-4 py-2 rounded-xl cat-btn-active transition flex items-center gap-1.5 whitespace-nowrap">
+          <i class="fa-solid fa-briefcase"></i> 1. 프리랜서 & N잡
+        </button>
+        <button onclick="switchCategory('creator')" id="cat-btn-creator" class="cat-btn px-4 py-2 rounded-xl bg-white text-slate-600 hover:bg-slate-200 transition flex items-center gap-1.5 whitespace-nowrap">
+          <i class="fa-solid fa-clapperboard"></i> 2. 크리에이터 & SNS
+        </button>
+        <button onclick="switchCategory('youth')" id="cat-btn-youth" class="cat-btn px-4 py-2 rounded-xl bg-white text-slate-600 hover:bg-slate-200 transition flex items-center gap-1.5 whitespace-nowrap">
+          <i class="fa-solid fa-graduation-cap"></i> 3. 청년 & 근로생활
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- 메인 영역 -->
+  <main class="max-w-4xl mx-auto px-4 py-6 w-full flex-grow space-y-6">
+
+    <!-- [구글 애드센스 상단 반응형 배너 영역] -->
+    <div class="p-3.5 rounded-xl border border-dashed border-slate-300 bg-slate-100/60 text-center text-xs text-slate-400">
+      <div class="flex items-center justify-center gap-2">
+        <i class="fa-solid fa-rectangle-ad text-slate-400"></i>
+        <span>Google AdSense 광고 영역</span>
+      </div>
+    </div>
+
+    <!-- ======================================================== -->
+    <!-- [섹션 1: 프리랜서 & N잡러 툴킷] -->
+    <!-- ======================================================== -->
+    <div id="section-freelance" class="category-section space-y-6">
+      
+      <!-- 계산기 1: 3.3% 실수령 계산기 -->
+      <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
+        <div class="flex items-center justify-between mb-4">
+          <div class="flex items-center gap-2.5">
+            <div class="w-9 h-9 rounded-xl bg-blue-100 text-blue-600 flex items-center justify-center font-black text-sm">3.3%</div>
+            <div>
+              <h2 class="text-base font-bold text-slate-900">프리랜서 3.3% 원천징수 실수령액 계산기</h2>
+              <p class="text-xs text-slate-500">외주/사업소득 입금 전 세금 공제액과 통장 입금액을 즉시 계산합니다.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="space-y-4">
+          <div>
+            <div class="flex justify-between items-center mb-1">
+              <label class="block text-xs font-bold text-slate-700">계약 금액 (세전)</label>
+              <div class="flex items-center gap-2 text-xs">
+                <label class="inline-flex items-center cursor-pointer">
+                  <input type="checkbox" id="vat-toggle" onchange="toggleVatMode()" class="sr-only peer">
+                  <div class="relative w-7 h-4 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-3 after:w-3 after:transition-all peer-checked:bg-blue-600"></div>
+                  <span class="ml-1.5 text-slate-600 font-medium">VAT(10%) 계산서 모드</span>
+                </label>
+              </div>
+            </div>
+            
+            <div class="relative">
+              <input type="text" id="amount-input" placeholder="예: 1,000,000" oninput="formatAndCalculateTax(this)"
+                     class="w-full pl-4 pr-12 py-3 border border-slate-300 rounded-xl text-base font-bold text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500">
+              <span class="absolute right-4 top-3.5 text-slate-400 font-medium text-sm">원</span>
+            </div>
+            <div class="flex flex-wrap gap-2 mt-2">
+              <button onclick="setAmount(300000)" class="text-xs bg-slate-100 hover:bg-slate-200 text-slate-700 font-medium px-2.5 py-1 rounded-lg transition">+30만</button>
+              <button onclick="setAmount(500000)" class="text-xs bg-slate-100 hover:bg-slate-200 text-slate-700 font-medium px-2.5 py-1 rounded-lg transition">+50만</button>
+              <button onclick="setAmount(1000000)" class="text-xs bg-slate-100 hover:bg-slate-200 text-slate-700 font-medium px-2.5 py-1 rounded-lg transition">+100만</button>
+              <button onclick="setAmount(3000000)" class="text-xs bg-slate-100 hover:bg-slate-200 text-slate-700 font-medium px-2.5 py-1 rounded-lg transition">+300만</button>
+            </div>
+          </div>
+
+          <!-- 계산 결과 박스 -->
+          <div class="bg-blue-50/70 p-5 rounded-xl border border-blue-100 space-y-2.5 text-sm">
+            <div id="vat-row" class="hidden flex justify-between items-center text-slate-600 pb-2 border-b border-blue-100">
+              <span>공급가액 + 부가세 (10%)</span>
+              <span id="vat-total-amount" class="font-bold text-slate-800">0원</span>
+            </div>
+            <div class="flex justify-between items-center text-slate-600">
+              <span>사업소득세 (국세 3.0%)</span>
+              <span id="tax-income" class="font-medium text-slate-800">0원</span>
+            </div>
+            <div class="flex justify-between items-center text-slate-600">
+              <span>지방소득세 (지방세 0.3%)</span>
+              <span id="tax-local" class="font-medium text-slate-800">0원</span>
+            </div>
+            <div class="flex justify-between items-center text-rose-600 font-semibold pt-1">
+              <span>총 공제 세금 (3.3%)</span>
+              <span id="tax-total">0원</span>
+            </div>
+            <div class="border-t border-blue-200 pt-3 flex justify-between items-center">
+              <div>
+                <span class="font-bold text-slate-900 text-base">내 통장 입금액 (실수령)</span>
+                <span class="block text-[11px] text-blue-600">5월 종합소득세 신고 시 환급 가능</span>
+              </div>
+              <span id="net-salary" class="font-black text-2xl text-blue-600">0원</span>
+            </div>
+          </div>
+
+          <button onclick="copyTaxResult()" class="w-full py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-xl text-xs flex items-center justify-center gap-1.5 transition">
+            <i class="fa-regular fa-copy"></i> 계산 결과 클립보드에 복사하기 (카톡/메모장용)
+          </button>
+        </div>
+      </div>
+
+      <!-- 외주 견적 계산기 -->
+      <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
+        <div class="flex items-center gap-2.5 mb-4">
+          <div class="w-9 h-9 rounded-xl bg-emerald-100 text-emerald-600 flex items-center justify-center font-bold text-sm">
+            <i class="fa-solid fa-coins"></i>
+          </div>
+          <div>
+            <h2 class="text-base font-bold text-slate-900">외주 프로젝트 적정 견적 시뮬레이터</h2>
+            <p class="text-xs text-slate-500">목표 시급과 투입 시간, 리스크 버퍼를 반영한 견적을 계산합니다.</p>
+          </div>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1">희망 시급 (원)</label>
+            <input type="number" id="hourly-rate" value="35000" oninput="calculateProjectFee()"
+                   class="w-full px-3.5 py-2.5 border border-slate-300 rounded-xl text-sm font-semibold focus:ring-2 focus:ring-emerald-500">
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1">순수 예상 작업 시간 (시간)</label>
+            <input type="number" id="work-hours" value="20" oninput="calculateProjectFee()"
+                   class="w-full px-3.5 py-2.5 border border-slate-300 rounded-xl text-sm font-semibold focus:ring-2 focus:ring-emerald-500">
+          </div>
+        </div>
+        <div class="mt-4 bg-emerald-50/70 p-4 rounded-xl border border-emerald-100 flex justify-between items-center text-sm">
+          <div>
+            <div class="text-xs text-emerald-900 font-bold">추천 청구 견적 (수정 리스크 +20% 포함)</div>
+            <div class="text-[11px] text-slate-500">클라이언트 커뮤니케이션 및 수정 안전 여유분 반영</div>
+          </div>
+          <div id="suggested-fee" class="font-black text-xl text-emerald-700">840,000원</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ======================================================== -->
+    <!-- [섹션 2: 크리에이터 & SNS 작업실] (신규 확장!) -->
+    <!-- ======================================================== -->
+    <div id="section-creator" class="category-section hidden space-y-6">
+
+      <!-- 툴 1: 인스타그램 줄바꿈 & 캡션 포맷터 -->
+      <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
+        <div class="flex items-center gap-2.5 mb-4">
+          <div class="w-9 h-9 rounded-xl bg-pink-100 text-pink-600 flex items-center justify-center font-bold text-sm">
+            <i class="fa-brands fa-instagram text-lg"></i>
+          </div>
+          <div>
+            <h2 class="text-base font-bold text-slate-900">인스타그램 줄바꿈 & 캡션 변환기</h2>
+            <p class="text-xs text-slate-500">인스타 게시물 작성 시 공백 줄바꿈이 깨지지 않도록 특수 공백 문자를 자동 삽입합니다.</p>
+          </div>
+        </div>
+
+        <div class="space-y-3">
+          <textarea id="insta-input" rows="5" placeholder="인스타그램 캡션을 여기에 작성하세요. 줄바꿈을 마음껏 하셔도 그대로 유지됩니다!"
+                    class="w-full p-3.5 border border-slate-300 rounded-xl text-sm focus:ring-2 focus:ring-pink-500"></textarea>
+          
+          <div class="flex justify-between items-center text-xs text-slate-500">
+            <span id="insta-char-count">글자 수: 0자</span>
+            <button onclick="convertAndCopyInsta()" class="py-2.5 px-4 bg-gradient-to-r from-pink-500 to-rose-500 hover:from-pink-600 hover:to-rose-600 text-white font-bold rounded-xl transition flex items-center gap-1.5 shadow-sm">
+              <i class="fa-regular fa-copy"></i> 줄바꿈 변환 후 즉시 복사
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- 툴 2: 유튜브 쇼츠/릴스 자막 글자 수 & 속도 분석기 -->
+      <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
+        <div class="flex items-center gap-2.5 mb-4">
+          <div class="w-9 h-9 rounded-xl bg-red-100 text-red-600 flex items-center justify-center font-bold text-sm">
+            <i class="fa-brands fa-youtube text-lg"></i>
+          </div>
+          <div>
+            <h2 class="text-base font-bold text-slate-900">숏폼(릴스/쇼츠) 대본 발화 속도 & 분량 분석기</h2>
+            <p class="text-xs text-slate-500">한국인 평균 말하기 속도(초당 5~6글자)를 기준으로 영상 예상 시간을 계산합니다.</p>
+          </div>
+        </div>
+
+        <div class="space-y-3">
+          <textarea id="script-input" rows="4" oninput="analyzeShortsScript(this)" placeholder="숏폼 대본 텍스트를 입력해 보세요..."
+                    class="w-full p-3.5 border border-slate-300 rounded-xl text-sm focus:ring-2 focus:ring-red-500"></textarea>
+          
+          <div class="grid grid-cols-3 gap-3 text-center">
+            <div class="p-3 bg-slate-50 rounded-xl border border-slate-200">
+              <div class="text-[11px] text-slate-400">총 글자 수 (공백 제외)</div>
+              <div id="script-chars" class="font-black text-lg text-slate-800">0자</div>
+            </div>
+            <div class="p-3 bg-red-50/70 rounded-xl border border-red-100">
+              <div class="text-[11px] text-red-600">예상 영상 길이</div>
+              <div id="script-time" class="font-black text-lg text-red-600">약 0초</div>
+            </div>
+            <div class="p-3 bg-slate-50 rounded-xl border border-slate-200">
+              <div class="text-[11px] text-slate-400">적정 숏폼 규격</div>
+              <div id="script-tier" class="font-bold text-sm text-slate-700 mt-1">-</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 툴 3: SNS 채널 광고 협찬 예상 단가 시뮬레이터 -->
+      <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
+        <div class="flex items-center gap-2.5 mb-4">
+          <div class="w-9 h-9 rounded-xl bg-purple-100 text-purple-600 flex items-center justify-center font-bold text-sm">
+            <i class="fa-solid fa-chart-line"></i>
+          </div>
+          <div>
+            <h2 class="text-base font-bold text-slate-900">크리에이터 SNS 광고·협찬 예상 단가 계산기</h2>
+            <p class="text-xs text-slate-500">평균 조회수와 팔로워 수를 기반으로 시장 기준 광고 단가를 추정합니다.</p>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1">팔로워 / 구독자 수</label>
+            <input type="number" id="creator-followers" value="10000" oninput="calculateSponsorFee()"
+                   class="w-full px-3.5 py-2.5 border border-slate-300 rounded-xl text-sm font-semibold focus:ring-2 focus:ring-purple-500">
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1">게시물당 평균 조회수</label>
+            <input type="number" id="creator-views" value="5000" oninput="calculateSponsorFee()"
+                   class="w-full px-3.5 py-2.5 border border-slate-300 rounded-xl text-sm font-semibold focus:ring-2 focus:ring-purple-500">
+          </div>
+        </div>
+
+        <div class="mt-4 bg-purple-50/70 p-4 rounded-xl border border-purple-100 flex justify-between items-center text-sm">
+          <div>
+            <div class="text-xs text-purple-900 font-bold">건당 권장 협찬 단가 (기본 브랜디드)</div>
+            <div class="text-[11px] text-slate-500">조회수 CPV(조회당 20~30원) 및 채널 기본 고정비 반영</div>
+          </div>
+          <div id="sponsor-fee" class="font-black text-xl text-purple-700">150,000원 ~ 250,000원</div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ======================================================== -->
+    <!-- [섹션 3: 청년 & 근로생활 툴킷] (신규 확장!) -->
+    <!-- ======================================================== -->
+    <div id="section-youth" class="category-section hidden space-y-6">
+
+      <!-- 툴 1: 주휴수당 자동 계산기 -->
+      <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
+        <div class="flex items-center gap-2.5 mb-4">
+          <div class="w-9 h-9 rounded-xl bg-amber-100 text-amber-600 flex items-center justify-center font-bold text-sm">
+            <i class="fa-solid fa-clock-rotate-left"></i>
+          </div>
+          <div>
+            <h2 class="text-base font-bold text-slate-900">알바/단기근로 주휴수당 자동 계산기</h2>
+            <p class="text-xs text-slate-500">주 15시간 이상 근무 시 발생하는 법정 주휴수당 발생 여부 및 금액을 계산합니다.</p>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1">약정 시급 (2026년 기준)</label>
+            <input type="number" id="youth-hourly" value="10030" oninput="calculateWeeklyAllowance()"
+                   class="w-full px-3.5 py-2.5 border border-slate-300 rounded-xl text-sm font-semibold focus:ring-2 focus:ring-amber-500">
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1">1주일 총 소정 근로 시간 (시간)</label>
+            <input type="number" id="youth-hours" value="20" oninput="calculateWeeklyAllowance()"
+                   class="w-full px-3.5 py-2.5 border border-slate-300 rounded-xl text-sm font-semibold focus:ring-2 focus:ring-amber-500">
+          </div>
+        </div>
+
+        <div class="mt-4 bg-amber-50/70 p-4 rounded-xl border border-amber-100 flex justify-between items-center text-sm">
+          <div>
+            <div id="youth-allowance-title" class="text-xs text-amber-900 font-bold">주간 주휴수당 금액</div>
+            <div id="youth-allowance-desc" class="text-[11px] text-slate-500">(주 20시간 ÷ 40시간) × 8시간 × 시급</div>
+          </div>
+          <div id="youth-allowance-result" class="font-black text-xl text-amber-700">40,120원 / 주</div>
+        </div>
+      </div>
+
+      <!-- 툴 2: 실업급여 간이 모의 계산기 -->
+      <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
+        <div class="flex items-center gap-2.5 mb-4">
+          <div class="w-9 h-9 rounded-xl bg-teal-100 text-teal-600 flex items-center justify-center font-bold text-sm">
+            <i class="fa-solid fa-umbrella"></i>
+          </div>
+          <div>
+            <h2 class="text-base font-bold text-slate-900">실업급여(구직급여) 예상 수령액 계산기</h2>
+            <p class="text-xs text-slate-500">퇴사 전 최근 3개월 평균 월급과 고용보험 가입 기간을 기반으로 계산합니다.</p>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1">퇴사 전 월 평균 세전 급여 (원)</label>
+            <input type="number" id="unemp-salary" value="2800000" oninput="calculateUnemploymentBenefit()"
+                   class="w-full px-3.5 py-2.5 border border-slate-300 rounded-xl text-sm font-semibold focus:ring-2 focus:ring-teal-500">
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1">고용보험 가입 기간</label>
+            <select id="unemp-period" onchange="calculateUnemploymentBenefit()" class="w-full px-3.5 py-2.5 border border-slate-300 rounded-xl text-sm font-semibold focus:ring-2 focus:ring-teal-500">
+              <option value="120">1년 이상 ~ 3년 미만 (150일 지급)</option>
+              <option value="180" selected>3년 이상 ~ 5년 미만 (180일 지급)</option>
+              <option value="210">5년 이상 ~ 10년 미만 (210일 지급)</option>
+              <option value="240">10년 이상 (240일 지급)</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="mt-4 bg-teal-50/70 p-4 rounded-xl border border-teal-100 flex justify-between items-center text-sm">
+          <div>
+            <div class="text-xs text-teal-900 font-bold">총 예상 실업급여 수령액 (상/하한액 반영)</div>
+            <div id="unemp-days-info" class="text-[11px] text-slate-500">일일 구직급여 약 66,000원 × 180일</div>
+          </div>
+          <div id="unemp-total-result" class="font-black text-xl text-teal-700">약 11,880,000원</div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- [구글 애드센스 하단 디스플레이 배너 영역] -->
+    <div class="p-3.5 rounded-xl border border-dashed border-slate-300 bg-slate-100/60 text-center text-xs text-slate-400">
+      <div class="flex items-center justify-center gap-2">
+        <i class="fa-solid fa-rectangle-ad text-slate-400"></i>
+        <span>Google AdSense 하단 피드 광고 영역</span>
+      </div>
+    </div>
+
+    <!-- ==================== [하단 구글 애드센스 SEO 가이드] ==================== -->
+    <section class="bg-white p-6 rounded-2xl border border-slate-200 text-xs text-slate-600 space-y-4">
+      <h3 class="font-bold text-sm text-slate-900 flex items-center gap-2">
+        <i class="fa-solid fa-circle-question text-blue-600"></i> 자주 묻는 질문 & 실무 상식
+      </h3>
+      <div class="space-y-3 leading-relaxed">
+        <div class="border-b border-slate-100 pb-2">
+          <h4 class="font-bold text-slate-800 mb-1">Q. 주휴수당은 누구나 받을 수 있나요?</h4>
+          <p>일주일 동안 소정 근로시간이 15시간 이상이며, 약정한 근무일에 결근 없이 개근한 경우 모든 아르바이트 및 단기 근로자에게 주휴수당이 의무 발생합니다. 5인 미만 사업장에도 100% 동일하게 적용됩니다.</p>
+        </div>
+        <div class="border-b border-slate-100 pb-2">
+          <h4 class="font-bold text-slate-800 mb-1">Q. 숏폼 대본은 몇 글자가 적당한가요?</h4>
+          <p>일반적으로 말하기 속도는 1초당 5~6글자입니다. 따라서 30초 릴스/쇼츠는 공백 포함 150~180자, 60초 풀버전은 300~350자 내외로 작성할 때 시청자가 지루해하지 않고 가장 몰입하여 시청할 수 있습니다.</p>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- 푸터 (애드센스 필수 링크 탑재) -->
+  <footer class="bg-slate-100 border-t border-slate-200 py-6 text-center text-xs text-slate-500">
+    <div class="max-w-4xl mx-auto px-4 space-y-2">
+      <div class="flex justify-center gap-4 text-slate-500 font-medium">
+        <a href="terms.html" class="hover:underline">이용약관 및 면책조항</a>
+        <span>•</span>
+        <a href="privacy.html" class="hover:underline">개인정보처리방침</a>
+      </div>
+      <p class="text-slate-400">본 사이트의 모든 계산 결과는 모의 시뮬레이션용이며, 공식 세무 및 노무 판단은 국세청 및 고용노동부를 통해 확인하세요.</p>
+      <p class="text-slate-400">© 2026 N-Toolkit. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <!-- 자바스크립트 로직 -->
+  <script>
+    // 카테고리 전환 로직
+    function switchCategory(cat) {
+      document.querySelectorAll('.category-section').forEach(el => el.classList.add('hidden'));
+      document.querySelectorAll('.cat-btn').forEach(btn => {
+        btn.classList.remove('cat-btn-active');
+        btn.classList.add('bg-white', 'text-slate-600');
+      });
+
+      document.getElementById('section-' + cat).classList.remove('hidden');
+      const activeBtn = document.getElementById('cat-btn-' + cat);
+      activeBtn.classList.add('cat-btn-active');
+      activeBtn.classList.remove('bg-white', 'text-slate-600');
+    }
+
+    // [카테고리 1 로직]
+    let isVatMode = false;
+    function toggleVatMode() {
+      isVatMode = document.getElementById('vat-toggle').checked;
+      const vatRow = document.getElementById('vat-row');
+      if (isVatMode) vatRow.classList.remove('hidden');
+      else vatRow.classList.add('hidden');
+      formatAndCalculateTax(document.getElementById('amount-input'));
+    }
+
+    function formatAndCalculateTax(input) {
+      let val = input.value.replace(/[^0-9]/g, '');
+      if (!val) {
+        resetTax();
+        input.value = '';
+        return;
+      }
+      let num = parseInt(val, 10);
+      input.value = num.toLocaleString();
+
+      if (isVatMode) {
+        const vat = Math.floor(num * 0.1);
+        document.getElementById('vat-total-amount').innerText = (num + vat).toLocaleString() + '원';
+      }
+
+      const incomeTax = Math.floor(num * 0.03);
+      const localTax = Math.floor(incomeTax * 0.1);
+      const totalTax = incomeTax + localTax;
+      const net = num - totalTax;
+
+      document.getElementById('tax-income').innerText = incomeTax.toLocaleString() + '원';
+      document.getElementById('tax-local').innerText = localTax.toLocaleString() + '원';
+      document.getElementById('tax-total').innerText = totalTax.toLocaleString() + '원';
+      document.getElementById('net-salary').innerText = net.toLocaleString() + '원';
+    }
+
+    function setAmount(val) {
+      const input = document.getElementById('amount-input');
+      input.value = val;
+      formatAndCalculateTax(input);
+    }
+
+    function resetTax() {
+      document.getElementById('tax-income').innerText = '0원';
+      document.getElementById('tax-local').innerText = '0원';
+      document.getElementById('tax-total').innerText = '0원';
+      document.getElementById('net-salary').innerText = '0원';
+      document.getElementById('vat-total-amount').innerText = '0원';
+    }
+
+    function calculateProjectFee() {
+      const rate = parseInt(document.getElementById('hourly-rate').value || 0, 10);
+      const hours = parseInt(document.getElementById('work-hours').value || 0, 10);
+      const total = Math.floor(rate * hours * 1.2);
+      document.getElementById('suggested-fee').innerText = total.toLocaleString() + '원';
+    }
+
+    function copyTaxResult() {
+      const amount = document.getElementById('amount-input').value;
+      const net = document.getElementById('net-salary').innerText;
+      const tax = document.getElementById('tax-total').innerText;
+      if (!amount) {
+        alert('계산할 금액을 먼저 입력해주세요!');
+        return;
+      }
+      const text = `[N-Toolkit 3.3% 계산 결과]\n• 계약 금액 (세전): ${amount}원\n• 총 공제 세금 (3.3%): ${tax}\n• 실제 통장 입금액: ${net}\n🔗 ${window.location.href}`;
+      navigator.clipboard.writeText(text).then(() => {
+        alert('결과가 복사되었습니다! 카톡이나 메일에 바로 붙여넣기 하세요.');
+      });
+    }
+
+    // [카테고리 2 로직: 크리에이터]
+    const instaInput = document.getElementById('insta-input');
+    instaInput.addEventListener('input', () => {
+      document.getElementById('insta-char-count').innerText = `글자 수: ${instaInput.value.length}자`;
+    });
+
+    function convertAndCopyInsta() {
+      const val = instaInput.value;
+      if (!val) {
+        alert('내용을 입력해 주세요!');
+        return;
+      }
+      // 공백 줄바꿈을 U+2800 (점자 공백) 또는 특수 공백으로 치환
+      const converted = val.split('\n').map(line => line.trim() === '' ? '⠀' : line).join('\n');
+      navigator.clipboard.writeText(converted).then(() => {
+        alert('줄바꿈 변환 완료! 인스타그램에 그대로 붙여넣으시면 줄바꿈이 깨지지 않습니다.');
+      });
+    }
+
+    function analyzeShortsScript(el) {
+      const text = el.value.replace(/\s+/g, '');
+      const count = text.length;
+      document.getElementById('script-chars').innerText = count + '자';
+
+      // 초당 5.5자 기준
+      const seconds = Math.round(count / 5.5);
+      document.getElementById('script-time').innerText = `약 ${seconds}초`;
+
+      const tier = document.getElementById('script-tier');
+      if (seconds <= 20) {
+        tier.innerText = '초단기 숏폼 (15~20초 적합)';
+        tier.className = 'font-bold text-sm text-blue-600 mt-1';
+      } else if (seconds <= 45) {
+        tier.innerText = '스탠다드 숏폼 (30~45초 적합)';
+        tier.className = 'font-bold text-sm text-emerald-600 mt-1';
+      } else if (seconds <= 65) {
+        tier.innerText = '풀버전 숏폼 (60초 꽉 채움)';
+        tier.className = 'font-bold text-sm text-amber-600 mt-1';
+      } else {
+        tier.innerText = '⚠️ 60초 초과 (대본 줄이기 권장)';
+        tier.className = 'font-bold text-sm text-rose-600 mt-1';
+      }
+    }
+
+    function calculateSponsorFee() {
+      const followers = parseInt(document.getElementById('creator-followers').value || 0, 10);
+      const views = parseInt(document.getElementById('creator-views').value || 0, 10);
+      
+      // 조회수당 25원 ~ 40원 + 기본 제작비
+      const minFee = Math.max(50000, Math.floor(views * 25));
+      const maxFee = Math.max(100000, Math.floor(views * 45 + followers * 5));
+      document.getElementById('sponsor-fee').innerText = `${minFee.toLocaleString()}원 ~ ${maxFee.toLocaleString()}원`;
+    }
+
+    // [카테고리 3 로직: 청년/근로]
+    function calculateWeeklyAllowance() {
+      const hourly = parseInt(document.getElementById('youth-hourly').value || 0, 10);
+      const hours = parseFloat(document.getElementById('youth-hours').value || 0);
+
+      const resBox = document.getElementById('youth-allowance-result');
+      const title = document.getElementById('youth-allowance-title');
+      const desc = document.getElementById('youth-allowance-desc');
+
+      if (hours < 15) {
+        title.innerText = '주휴수당 대상 아님';
+        desc.innerText = '주 15시간 미만 초단기 근로는 주휴수당이 미발생합니다.';
+        resBox.innerText = '0원';
+        resBox.className = 'font-black text-xl text-slate-400';
+      } else {
+        title.innerText = '주간 주휴수당 금액';
+        const cappedHours = Math.min(hours, 40);
+        const allowance = Math.floor((cappedHours / 40) * 8 * hourly);
+        desc.innerText = `(주 ${cappedHours}시간 ÷ 40) × 8시간 × ${hourly.toLocaleString()}원`;
+        resBox.innerText = allowance.toLocaleString() + '원 / 주';
+        resBox.className = 'font-black text-xl text-amber-700';
+      }
+    }
+
+    function calculateUnemploymentBenefit() {
+      const salary = parseInt(document.getElementById('unemp-salary').value || 0, 10);
+      const days = parseInt(document.getElementById('unemp-period').value || 180, 10);
+
+      // 일 급여 = 월급 ÷ 30 × 60%
+      let daily = Math.floor((salary / 30) * 0.6);
+      // 2026 하한액 약 66,000원, 상한액 66,000원 (통상 하한/상한 근접)
+      daily = Math.max(65000, Math.min(66000, daily));
+
+      const total = daily * days;
+      document.getElementById('unemp-days-info').innerText = `일일 구직급여 약 ${daily.toLocaleString()}원 × ${days}일`;
+      document.getElementById('unemp-total-result').innerText = `약 ${total.toLocaleString()}원`;
+    }
+
+    function shareLink() {
+      if (navigator.share) {
+        navigator.share({
+          title: 'N-Toolkit | 1인 사업가·크리에이터·청년 올인원 유틸리티',
+          text: '3.3% 계산기부터 쇼츠 대본 분석, 주휴수당 계산기까지 100% 무료 올인원 툴킷!',
+          url: window.location.href,
+        }).catch(() => {});
+      } else {
+        navigator.clipboard.writeText(window.location.href).then(() => {
+          alert('웹사이트 링크가 복사되었습니다!');
+        });
+      }
+    }
+
+    // 초기 실행
+    setAmount(1000000);
+    calculateProjectFee();
+    calculateSponsorFee();
+    calculateWeeklyAllowance();
+    calculateUnemploymentBenefit();
+  </script>
+</body>
+</html>
