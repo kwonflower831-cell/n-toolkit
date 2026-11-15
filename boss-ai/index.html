@@ -1,0 +1,801 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>사장님비서 - 3초 리뷰답글 & SNS 홍보 AI</title>
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4090405931385827" crossorigin="anonymous"></script>
+  
+  <!-- PWA & Mobile Web App Meta Tags -->
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#ea580c">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="사장님비서">
+  <link rel="apple-touch-icon" href="icon-192.png">
+  <link rel="icon" type="image/png" href="icon-192.png">
+
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <!-- Pretendard Font -->
+  <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" />
+  
+  <style>
+    body {
+      font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, Roboto, sans-serif;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .hide-scrollbar::-webkit-scrollbar {
+      display: none;
+    }
+    .hide-scrollbar {
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
+  </style>
+</head>
+<body class="bg-amber-50/40 text-slate-800 antialiased min-h-screen pb-24 select-none">
+
+  <!-- 상단 모바일 헤더 -->
+  <header class="sticky top-0 z-30 bg-white/95 backdrop-blur border-b border-amber-100 px-4 py-3 shadow-xs">
+    <div class="max-w-md mx-auto flex items-center justify-between">
+      <div class="flex items-center gap-2.5">
+        <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-orange-600 to-amber-500 flex items-center justify-center text-white font-bold shadow-md shadow-orange-500/20">
+          <i data-lucide="store" class="w-5 h-5"></i>
+        </div>
+        <div>
+          <div class="flex items-center gap-1.5">
+            <h1 class="text-base font-black text-slate-900 tracking-tight">사장님비서</h1>
+            <span class="text-[10px] font-bold bg-orange-100 text-orange-700 px-1.5 py-0.5 rounded-full flex items-center gap-0.5">
+              <i data-lucide="sparkles" class="w-2.5 h-2.5"></i> AI 엔진
+            </span>
+          </div>
+          <p id="header-store-badge" class="text-xs text-slate-500 truncate max-w-[180px]">맛있는 우리동네 1번지</p>
+        </div>
+      </div>
+      
+      <!-- 상단 빠른 매장설정 버튼 -->
+      <button onclick="switchTab('profile')" class="p-2 text-slate-500 hover:text-orange-600 hover:bg-orange-50 rounded-full transition-colors" title="매장 정보 설정">
+        <i data-lucide="settings" class="w-5 h-5"></i>
+      </button>
+    </div>
+  </header>
+
+  <!-- 메인 컨테이너 -->
+  <main class="max-w-md mx-auto px-4 py-4 space-y-4">
+
+    <!-- ==================== 1. 탭: 리뷰 답글 생성기 ==================== -->
+    <section id="tab-review" class="space-y-4">
+      
+      <!-- 안내 배너 -->
+      <div class="bg-gradient-to-r from-orange-500 to-amber-500 rounded-2xl p-4 text-white shadow-lg shadow-orange-500/20">
+        <div class="flex items-start justify-between">
+          <div>
+            <span class="text-[10px] font-bold bg-white/20 px-2 py-0.5 rounded-full uppercase tracking-wider">배민 · 네이버 · 요기요 · 쿠팡이츠</span>
+            <h2 class="text-base font-black mt-1">3초 리뷰 답글 생성기</h2>
+            <p class="text-xs text-orange-100 mt-0.5">손님 리뷰를 넣으면 단골 만드는 답글을 3가지 버전으로 지어드립니다.</p>
+          </div>
+          <div class="w-10 h-10 rounded-xl bg-white/20 flex items-center justify-center shrink-0">
+            <i data-lucide="message-square-plus" class="w-6 h-6 text-white"></i>
+          </div>
+        </div>
+      </div>
+
+      <!-- 빠른 테스트용 예시 리뷰 칩 -->
+      <div class="space-y-1.5">
+        <div class="flex items-center justify-between text-[11px] text-slate-500 px-1">
+          <span class="font-bold flex items-center gap-1">
+            <i data-lucide="zap" class="w-3.5 h-3.5 text-amber-500"></i> 빠른 예시 테스트 (터치해보세요)
+          </span>
+        </div>
+        <div class="flex gap-1.5 overflow-x-auto hide-scrollbar pb-1">
+          <button onclick="loadSampleReview('praise')" class="px-2.5 py-1.5 bg-white border border-amber-200/80 rounded-xl text-xs font-medium text-slate-700 whitespace-nowrap shadow-2xs hover:bg-orange-50 active:scale-95 transition-all">
+            ⭐ 양 많고 꿀맛 (극찬)
+          </button>
+          <button onclick="loadSampleReview('late')" class="px-2.5 py-1.5 bg-white border border-amber-200/80 rounded-xl text-xs font-medium text-slate-700 whitespace-nowrap shadow-2xs hover:bg-orange-50 active:scale-95 transition-all">
+            ⏰ 맛은 좋은데 배달 지연
+          </button>
+          <button onclick="loadSampleReview('salty')" class="px-2.5 py-1.5 bg-white border border-amber-200/80 rounded-xl text-xs font-medium text-slate-700 whitespace-nowrap shadow-2xs hover:bg-orange-50 active:scale-95 transition-all">
+            🧂 간이 조금 짬
+          </button>
+          <button onclick="loadSampleReview('hair')" class="px-2.5 py-1.5 bg-white border border-rose-200 rounded-xl text-xs font-medium text-rose-600 whitespace-nowrap shadow-2xs hover:bg-rose-50 active:scale-95 transition-all">
+            ⚠️ 이물질/위생 컴플레인
+          </button>
+          <button onclick="loadSampleReview('star5')" class="px-2.5 py-1.5 bg-white border border-amber-200/80 rounded-xl text-xs font-medium text-slate-700 whitespace-nowrap shadow-2xs hover:bg-orange-50 active:scale-95 transition-all">
+            ✨ 말없는 별점 5점
+          </button>
+        </div>
+      </div>
+
+      <!-- 입력 카드 -->
+      <div class="bg-white rounded-2xl border border-slate-200/80 p-4 shadow-xs space-y-3.5">
+        
+        <!-- 별점 및 플랫폼 선택 -->
+        <div class="flex items-center justify-between pb-3 border-b border-slate-100">
+          <div>
+            <label class="block text-[11px] font-bold text-slate-500 mb-1">손님 별점</label>
+            <div id="star-rating-box" class="flex gap-1">
+              <button type="button" onclick="setReviewRating(1)" class="star-btn text-amber-400"><i data-lucide="star" class="w-5 h-5 fill-amber-400"></i></button>
+              <button type="button" onclick="setReviewRating(2)" class="star-btn text-amber-400"><i data-lucide="star" class="w-5 h-5 fill-amber-400"></i></button>
+              <button type="button" onclick="setReviewRating(3)" class="star-btn text-amber-400"><i data-lucide="star" class="w-5 h-5 fill-amber-400"></i></button>
+              <button type="button" onclick="setReviewRating(4)" class="star-btn text-amber-400"><i data-lucide="star" class="w-5 h-5 fill-amber-400"></i></button>
+              <button type="button" onclick="setReviewRating(5)" class="star-btn text-amber-400"><i data-lucide="star" class="w-5 h-5 fill-amber-400"></i></button>
+            </div>
+          </div>
+          <div>
+            <label class="block text-[11px] font-bold text-slate-500 mb-1 text-right">주문 메뉴 (선택)</label>
+            <input type="text" id="input-review-menu" placeholder="예: 김치찌개, 계란말이" class="text-xs px-2.5 py-1.5 border border-slate-200 rounded-lg outline-none focus:border-orange-500 w-36 text-right">
+          </div>
+        </div>
+
+        <!-- 손님 리뷰 본문 입력 -->
+        <div>
+          <div class="flex justify-between items-center mb-1">
+            <label class="text-xs font-bold text-slate-700">손님 리뷰 내용 *</label>
+            <button type="button" onclick="clearReviewInput()" class="text-[11px] text-slate-400 hover:text-slate-600">지우기</button>
+          </div>
+          <textarea id="input-review-text" rows="3" placeholder="손님이 남긴 리뷰를 여기에 붙여넣으세요. (예: 양도 많고 진짜 맛있게 잘 먹었어요! 단골할게요~)" class="w-full text-xs p-3 rounded-xl border border-slate-200 focus:border-orange-500 focus:ring-1 focus:ring-orange-500 outline-none leading-relaxed"></textarea>
+        </div>
+
+        <!-- 사장님 말투(톤앤매너) 선택 -->
+        <div>
+          <label class="block text-[11px] font-bold text-slate-600 mb-1.5">답글 스타일 (사장님 말투)</label>
+          <div class="grid grid-cols-2 gap-2 text-xs">
+            <button type="button" onclick="setTone('kind')" id="tone-btn-kind" class="p-2.5 rounded-xl border border-orange-500 bg-orange-50/80 font-bold text-orange-950 flex items-center gap-2 shadow-2xs">
+              <span class="text-base">👵</span>
+              <div class="text-left">
+                <div class="font-bold text-[11px]">다정다감 이모님</div>
+                <div class="text-[10px] text-orange-700/80 font-normal">따뜻하고 살가운 톤</div>
+              </div>
+            </button>
+            
+            <button type="button" onclick="setTone('polite')" id="tone-btn-polite" class="p-2.5 rounded-xl border border-slate-200 hover:border-slate-300 bg-white font-medium text-slate-700 flex items-center gap-2">
+              <span class="text-base">👨‍🍳</span>
+              <div class="text-left">
+                <div class="font-bold text-[11px]">정중·전문 대표</div>
+                <div class="text-[10px] text-slate-400 font-normal">격식 있고 신뢰감 높은 톤</div>
+              </div>
+            </button>
+            
+            <button type="button" onclick="setTone('witty')" id="tone-btn-witty" class="p-2.5 rounded-xl border border-slate-200 hover:border-slate-300 bg-white font-medium text-slate-700 flex items-center gap-2">
+              <span class="text-base">⚡</span>
+              <div class="text-left">
+                <div class="font-bold text-[11px]">유쾌한 청년사장</div>
+                <div class="text-[10px] text-slate-400 font-normal">센스 있고 에너지 넘치는 톤</div>
+              </div>
+            </button>
+            
+            <button type="button" onclick="setTone('defense')" id="tone-btn-defense" class="p-2.5 rounded-xl border border-slate-200 hover:border-slate-300 bg-white font-medium text-slate-700 flex items-center gap-2">
+              <span class="text-base">🛡️</span>
+              <div class="text-left">
+                <div class="font-bold text-[11px]">침착한 방어·수습</div>
+                <div class="text-[10px] text-slate-400 font-normal">컴플레인 전용 정중 사과</div>
+              </div>
+            </button>
+          </div>
+        </div>
+
+        <!-- 답글 생성 버튼 -->
+        <button onclick="generateReviewReplies()" class="w-full py-3.5 bg-gradient-to-r from-orange-600 to-amber-600 hover:from-orange-700 hover:to-amber-700 text-white font-bold rounded-xl shadow-lg shadow-orange-500/25 flex items-center justify-center gap-2 active:scale-[0.99] transition-all">
+          <i data-lucide="sparkles" class="w-4 h-4"></i>
+          <span>3초 만에 맞춤 답글 3종 생성하기</span>
+        </button>
+
+      </div>
+
+      <!-- 생성 결과 카드 영역 -->
+      <div id="reply-results-container" class="hidden space-y-3">
+        <div class="flex items-center justify-between px-1">
+          <h3 class="text-xs font-bold text-slate-800 flex items-center gap-1.5">
+            <i data-lucide="check-circle-2" class="w-4 h-4 text-emerald-600"></i> 생성된 추천 답글 (마음에 드는 것을 복사하세요)
+          </h3>
+        </div>
+
+        <!-- 버전 A: 정성 가득 감동형 -->
+        <div class="bg-white rounded-2xl border border-orange-200 p-4 shadow-xs space-y-2">
+          <div class="flex items-center justify-between">
+            <span class="text-[11px] font-bold bg-orange-100 text-orange-800 px-2 py-0.5 rounded-md">버전 1. 단골 만드는 정성형 (강추 ⭐)</span>
+            <button onclick="copyGeneratedText('reply-text-1')" class="px-2.5 py-1 bg-orange-600 hover:bg-orange-700 text-white font-bold rounded-lg text-xs flex items-center gap-1 active:scale-95 transition-all">
+              <i data-lucide="copy" class="w-3.5 h-3.5"></i> 복사
+            </button>
+          </div>
+          <div id="reply-text-1" class="text-xs text-slate-700 leading-relaxed bg-amber-50/50 p-3 rounded-xl border border-amber-100 whitespace-pre-line font-normal"></div>
+        </div>
+
+        <!-- 버전 B: 깔끔 간결형 -->
+        <div class="bg-white rounded-2xl border border-slate-200 p-4 shadow-xs space-y-2">
+          <div class="flex items-center justify-between">
+            <span class="text-[11px] font-bold bg-slate-100 text-slate-700 px-2 py-0.5 rounded-md">버전 2. 가독성 좋은 깔끔형</span>
+            <button onclick="copyGeneratedText('reply-text-2')" class="px-2.5 py-1 bg-slate-800 hover:bg-slate-900 text-white font-bold rounded-lg text-xs flex items-center gap-1 active:scale-95 transition-all">
+              <i data-lucide="copy" class="w-3.5 h-3.5"></i> 복사
+            </button>
+          </div>
+          <div id="reply-text-2" class="text-xs text-slate-700 leading-relaxed bg-slate-50 p-3 rounded-xl border border-slate-200/70 whitespace-pre-line font-normal"></div>
+        </div>
+
+        <!-- 버전 C: 친근 위트형 -->
+        <div class="bg-white rounded-2xl border border-slate-200 p-4 shadow-xs space-y-2">
+          <div class="flex items-center justify-between">
+            <span class="text-[11px] font-bold bg-amber-100 text-amber-800 px-2 py-0.5 rounded-md">버전 3. 친근한 센스형</span>
+            <button onclick="copyGeneratedText('reply-text-3')" class="px-2.5 py-1 bg-amber-600 hover:bg-amber-700 text-white font-bold rounded-lg text-xs flex items-center gap-1 active:scale-95 transition-all">
+              <i data-lucide="copy" class="w-3.5 h-3.5"></i> 복사
+            </button>
+          </div>
+          <div id="reply-text-3" class="text-xs text-slate-700 leading-relaxed bg-amber-50/30 p-3 rounded-xl border border-amber-100 whitespace-pre-line font-normal"></div>
+        </div>
+
+      </div>
+
+    </section>
+
+    <!-- ==================== 2. 탭: SNS 홍보글 생성기 (인스타/당근) ==================== -->
+    <section id="tab-sns" class="hidden space-y-4">
+      
+      <!-- 안내 배너 -->
+      <div class="bg-gradient-to-r from-pink-500 to-rose-500 rounded-2xl p-4 text-white shadow-lg shadow-pink-500/20">
+        <div class="flex items-start justify-between">
+          <div>
+            <span class="text-[10px] font-bold bg-white/20 px-2 py-0.5 rounded-full uppercase tracking-wider">인스타그램 · 당근마켓 동네생활</span>
+            <h2 class="text-base font-black mt-1">SNS 홍보문구 3초 자동 완성</h2>
+            <p class="text-xs text-pink-100 mt-0.5">키워드만 넣으면 감성 피드와 해시태그를 알아서 뽑아줍니다.</p>
+          </div>
+          <div class="w-10 h-10 rounded-xl bg-white/20 flex items-center justify-center shrink-0">
+            <i data-lucide="instagram" class="w-6 h-6 text-white"></i>
+          </div>
+        </div>
+      </div>
+
+      <!-- SNS 입력 카드 -->
+      <div class="bg-white rounded-2xl border border-slate-200/80 p-4 shadow-xs space-y-3.5">
+        
+        <!-- 홍보 주제 빠른 선택 칩 -->
+        <div>
+          <label class="block text-[11px] font-bold text-slate-600 mb-1.5">홍보 주제 빠른 선택</label>
+          <div class="flex flex-wrap gap-1.5">
+            <button type="button" onclick="setSnsTopic('신메뉴', '국내산 묵은지로 푹 끓여낸 묵은지 돼지찌개 출시')" class="px-2.5 py-1 bg-slate-50 border border-slate-200 rounded-lg text-xs hover:border-pink-500">🍲 신메뉴 출시</button>
+            <button type="button" onclick="setSnsTopic('비오는날', '비 오는 날 방문 고객님께 노릇한 해물파전 5,000원 할인')" class="px-2.5 py-1 bg-slate-50 border border-slate-200 rounded-lg text-xs hover:border-pink-500">🌧️ 비 오는 날 할인</button>
+            <button type="button" onclick="setSnsTopic('재료소진', '오늘 준비한 당일 도축 생고기 전량 완판 조기 마감')" class="px-2.5 py-1 bg-slate-50 border border-slate-200 rounded-lg text-xs hover:border-pink-500">🔥 완판 조기마감</button>
+            <button type="button" onclick="setSnsTopic('주말예약', '이번 주말 가족 모임 및 단체 룸 예약 선착순 접수')" class="px-2.5 py-1 bg-slate-50 border border-slate-200 rounded-lg text-xs hover:border-pink-500">📅 주말 예약 안내</button>
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1">알리고 싶은 핵심 내용 *</label>
+          <input type="text" id="input-sns-keyword" placeholder="예: 오늘 갓 구운 딸기 크루와상 나왔어요! 3개 구매 시 아메리카노 무료" class="w-full text-xs px-3 py-2.5 rounded-xl border border-slate-200 focus:border-pink-500 outline-none">
+        </div>
+
+        <button onclick="generateSnsPosts()" class="w-full py-3.5 bg-gradient-to-r from-pink-600 to-rose-600 hover:from-pink-700 hover:to-rose-700 text-white font-bold rounded-xl shadow-lg shadow-pink-500/25 flex items-center justify-center gap-2 active:scale-[0.99] transition-all">
+          <i data-lucide="sparkles" class="w-4 h-4"></i>
+          <span>인스타 & 당근 홍보글 동시 생성하기</span>
+        </button>
+
+      </div>
+
+      <!-- SNS 결과 카드 -->
+      <div id="sns-results-container" class="hidden space-y-3">
+        <!-- 인스타그램 버전 -->
+        <div class="bg-white rounded-2xl border border-pink-200 p-4 shadow-xs space-y-2">
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-bold text-pink-700 flex items-center gap-1.5">
+              <i data-lucide="instagram" class="w-4 h-4"></i> 인스타그램 감성 피드 & 해시태그
+            </span>
+            <button onclick="copyGeneratedText('sns-insta-text')" class="px-2.5 py-1 bg-pink-600 hover:bg-pink-700 text-white font-bold rounded-lg text-xs flex items-center gap-1">
+              <i data-lucide="copy" class="w-3.5 h-3.5"></i> 복사
+            </button>
+          </div>
+          <div id="sns-insta-text" class="text-xs text-slate-700 leading-relaxed bg-pink-50/40 p-3 rounded-xl border border-pink-100 whitespace-pre-line font-normal"></div>
+        </div>
+
+        <!-- 당근마켓 동네생활 버전 -->
+        <div class="bg-white rounded-2xl border border-orange-200 p-4 shadow-xs space-y-2">
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-bold text-orange-700 flex items-center gap-1.5">
+              <span class="text-sm">🥕</span> 당근마켓 동네생활 친근한 이웃 버전
+            </span>
+            <button onclick="copyGeneratedText('sns-karrot-text')" class="px-2.5 py-1 bg-orange-600 hover:bg-orange-700 text-white font-bold rounded-lg text-xs flex items-center gap-1">
+              <i data-lucide="copy" class="w-3.5 h-3.5"></i> 복사
+            </button>
+          </div>
+          <div id="sns-karrot-text" class="text-xs text-slate-700 leading-relaxed bg-orange-50/40 p-3 rounded-xl border border-orange-100 whitespace-pre-line font-normal"></div>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- ==================== 3. 탭: 단골/문자 생성기 ==================== -->
+    <section id="tab-sms" class="hidden space-y-4">
+      
+      <!-- 안내 배너 -->
+      <div class="bg-gradient-to-r from-emerald-600 to-teal-600 rounded-2xl p-4 text-white shadow-lg shadow-emerald-500/20">
+        <div class="flex items-start justify-between">
+          <div>
+            <span class="text-[10px] font-bold bg-white/20 px-2 py-0.5 rounded-full uppercase tracking-wider">단골 재방문 · 쿠폰 발송</span>
+            <h2 class="text-base font-black mt-1">단체 문자 & 쿠폰 안내문</h2>
+            <p class="text-xs text-emerald-100 mt-0.5">스팸처럼 보이지 않고 단골 마음을 움직이는 감동 문자입니다.</p>
+          </div>
+          <div class="w-10 h-10 rounded-xl bg-white/20 flex items-center justify-center shrink-0">
+            <i data-lucide="send" class="w-6 h-6 text-white"></i>
+          </div>
+        </div>
+      </div>
+
+      <!-- 상황 선택 카드 -->
+      <div class="grid grid-cols-2 gap-2 text-xs">
+        <button onclick="generateSmsType('revisit')" class="p-3 bg-white border border-slate-200 rounded-xl text-left hover:border-emerald-500 shadow-2xs space-y-1">
+          <div class="font-bold text-slate-800 flex items-center gap-1">
+            <span>🎁</span> 재방문 유도 할인
+          </div>
+          <p class="text-[10px] text-slate-400">오랜만에 연락드리는 단골 혜택</p>
+        </button>
+
+        <button onclick="generateSmsType('rain')" class="p-3 bg-white border border-slate-200 rounded-xl text-left hover:border-emerald-500 shadow-2xs space-y-1">
+          <div class="font-bold text-slate-800 flex items-center gap-1">
+            <span>🌧️</span> 궂은 날씨 위로문자
+          </div>
+          <p class="text-[10px] text-slate-400">비/눈 오는 날 서비스 증정</p>
+        </button>
+
+        <button onclick="generateSmsType('birthday')" class="p-3 bg-white border border-slate-200 rounded-xl text-left hover:border-emerald-500 shadow-2xs space-y-1">
+          <div class="font-bold text-slate-800 flex items-center gap-1">
+            <span>🎂</span> 생일 축하 쿠폰
+          </div>
+          <p class="text-[10px] text-slate-400">생일 고객 특별 선물 안내</p>
+        </button>
+
+        <button onclick="generateSmsType('holiday')" class="p-3 bg-white border border-slate-200 rounded-xl text-left hover:border-emerald-500 shadow-2xs space-y-1">
+          <div class="font-bold text-slate-800 flex items-center gap-1">
+            <span>🏮</span> 명절/연말 감사인사
+          </div>
+          <p class="text-[10px] text-slate-400">정성 가득한 감사의 말씀</p>
+        </button>
+      </div>
+
+      <!-- 문자 결과 카드 -->
+      <div id="sms-results-container" class="space-y-3">
+        <div class="bg-white rounded-2xl border border-emerald-200 p-4 shadow-xs space-y-2">
+          <div class="flex items-center justify-between">
+            <span id="sms-title-badge" class="text-[11px] font-bold bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded-md">단골 재방문 유도 문자</span>
+            <button onclick="copyGeneratedText('sms-text-result')" class="px-2.5 py-1 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-lg text-xs flex items-center gap-1">
+              <i data-lucide="copy" class="w-3.5 h-3.5"></i> 문자 복사
+            </button>
+          </div>
+          <div id="sms-text-result" class="text-xs text-slate-700 leading-relaxed bg-emerald-50/40 p-3 rounded-xl border border-emerald-100 whitespace-pre-line font-normal">
+[가게이름] 사장 드림
+
+안녕하세요, 고객님! 그동안 잘 지내셨나요? 
+요즘 날씨가 많이 쌀쌀해졌는데 늘 건강 유의하시길 바랍니다.
+
+늘 저희 매장을 아껴주셨던 고마운 마음에 보답하고자, 작은 혜택을 준비했습니다. 이번 주 매장 방문 시 본 문자를 보여주시면 [대표메뉴 10% 즉시 할인 / 시원한 음료 1캔]을 기분 좋게 쏩니다!
+
+따뜻한 밥 한 끼 드시러 언제든 편하게 들러주세요. 정성껏 모시겠습니다!
+
+■ 매장 위치: [동네이름]
+■ 문의 및 예약: [매장연락처]
+          </div>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- ==================== 4. 탭: 매장 프로필 설정 ==================== -->
+    <section id="tab-profile" class="hidden space-y-4">
+      <div class="flex items-center justify-between">
+        <div>
+          <h2 class="text-base font-bold text-slate-900">내 매장 프로필</h2>
+          <p class="text-xs text-slate-500">입력된 매장 정보가 모든 AI 답글에 자동 반영됩니다.</p>
+        </div>
+      </div>
+
+      <div class="bg-white rounded-2xl border border-slate-200/80 p-4 shadow-xs space-y-3 text-xs">
+        <div>
+          <label class="block font-bold text-slate-700 mb-1">상호명 (가게 이름) *</label>
+          <input type="text" id="prof-store-name" value="맛있는 우리동네 1번지" class="w-full px-3 py-2 border border-slate-200 rounded-xl outline-none focus:border-orange-500">
+        </div>
+        
+        <div class="grid grid-cols-2 gap-2">
+          <div>
+            <label class="block font-bold text-slate-700 mb-1">사장님 칭호</label>
+            <input type="text" id="prof-owner-title" value="사장" placeholder="예: 이모, 삼촌, 셰프, 대표" class="w-full px-3 py-2 border border-slate-200 rounded-xl outline-none focus:border-orange-500">
+          </div>
+          <div>
+            <label class="block font-bold text-slate-700 mb-1">동네 / 위치</label>
+            <input type="text" id="prof-store-location" value="역삼동" placeholder="예: 망원동, 해운대" class="w-full px-3 py-2 border border-slate-200 rounded-xl outline-none focus:border-orange-500">
+          </div>
+        </div>
+
+        <div>
+          <label class="block font-bold text-slate-700 mb-1">대표 시그니처 메뉴</label>
+          <input type="text" id="prof-store-signature" value="묵은지 돼지찌개, 치즈 계란말이" class="w-full px-3 py-2 border border-slate-200 rounded-xl outline-none focus:border-orange-500">
+        </div>
+
+        <div>
+          <label class="block font-bold text-slate-700 mb-1">매장 전화번호</label>
+          <input type="text" id="prof-store-phone" value="02-1234-5678" class="w-full px-3 py-2 border border-slate-200 rounded-xl outline-none focus:border-orange-500">
+        </div>
+
+        <button onclick="saveStoreProfile()" class="w-full py-3 bg-orange-600 hover:bg-orange-700 text-white font-bold rounded-xl shadow-md transition-all">
+          매장 정보 저장하기
+        </button>
+      </div>
+
+      <!-- 서비스 소개 카드 -->
+      <div class="bg-amber-100/50 rounded-2xl p-4 border border-amber-200 text-xs space-y-1.5 text-amber-950">
+        <div class="font-bold flex items-center gap-1.5">
+          <i data-lucide="shield-check" class="w-4 h-4 text-orange-600"></i> 사장님비서 100% 안심 설계
+        </div>
+        <p class="text-[11px] leading-relaxed text-amber-900/80">
+          입력하신 모든 매장 정보와 답글 기록은 사장님의 휴대폰 내부에만 안전하게 저장되며 외부 서버로 유출되지 않습니다.
+        </p>
+      </div>
+
+    </section>
+
+  </main>
+
+  <!-- ==================== 하단 모바일 고정 탭 바 ==================== -->
+  <nav class="fixed bottom-0 left-0 right-0 z-40 bg-white/95 backdrop-blur border-t border-slate-200 py-2">
+    <div class="max-w-md mx-auto grid grid-cols-4 text-center">
+      <button onclick="switchTab('review')" id="nav-btn-review" class="flex flex-col items-center gap-1 py-1 text-orange-600 transition-colors">
+        <i data-lucide="message-square" class="w-5 h-5"></i>
+        <span class="text-[11px] font-bold">리뷰 답글</span>
+      </button>
+      <button onclick="switchTab('sns')" id="nav-btn-sns" class="flex flex-col items-center gap-1 py-1 text-slate-400 hover:text-slate-700 transition-colors">
+        <i data-lucide="instagram" class="w-5 h-5"></i>
+        <span class="text-[11px] font-medium">SNS 홍보</span>
+      </button>
+      <button onclick="switchTab('sms')" id="nav-btn-sms" class="flex flex-col items-center gap-1 py-1 text-slate-400 hover:text-slate-700 transition-colors">
+        <i data-lucide="send" class="w-5 h-5"></i>
+        <span class="text-[11px] font-medium">단골 문자</span>
+      </button>
+      <button onclick="switchTab('profile')" id="nav-btn-profile" class="flex flex-col items-center gap-1 py-1 text-slate-400 hover:text-slate-700 transition-colors">
+        <i data-lucide="store" class="w-5 h-5"></i>
+        <span class="text-[11px] font-medium">매장 설정</span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- 토스트 알림 메시지 -->
+  <div id="toast" class="fixed bottom-20 left-1/2 -translate-x-1/2 z-50 bg-slate-900/90 text-white text-xs font-bold py-2.5 px-4 rounded-full shadow-lg opacity-0 pointer-events-none transition-all duration-300 flex items-center gap-1.5">
+    <i data-lucide="check" class="w-4 h-4 text-emerald-400"></i>
+    <span id="toast-message">클립보드에 복사되었습니다!</span>
+  </div>
+
+  <script>
+    // ==================== 기본 상태 관리 ====================
+    const STORAGE_KEY_STORE = 'boss_ai_store_profile';
+    
+    let storeProfile = {
+      name: '맛있는 우리동네 1번지',
+      ownerTitle: '사장',
+      location: '역삼동',
+      signature: '묵은지 돼지찌개, 치즈 계란말이',
+      phone: '02-1234-5678'
+    };
+
+    let currentRating = 5;
+    let currentTone = 'kind'; // 'kind' | 'polite' | 'witty' | 'defense'
+
+    // ==================== 초기 로딩 ====================
+    window.addEventListener('DOMContentLoaded', () => {
+      loadProfile();
+      lucide.createIcons();
+    });
+
+    function loadProfile() {
+      const saved = localStorage.getItem(STORAGE_KEY_STORE);
+      if (saved) {
+        try {
+          storeProfile = JSON.parse(saved);
+        } catch(e) {}
+      }
+      renderHeaderStoreBadge();
+      fillProfileInputs();
+    }
+
+    function renderHeaderStoreBadge() {
+      document.getElementById('header-store-badge').textContent = storeProfile.name;
+    }
+
+    function fillProfileInputs() {
+      document.getElementById('prof-store-name').value = storeProfile.name;
+      document.getElementById('prof-owner-title').value = storeProfile.ownerTitle;
+      document.getElementById('prof-store-location').value = storeProfile.location;
+      document.getElementById('prof-store-signature').value = storeProfile.signature;
+      document.getElementById('prof-store-phone').value = storeProfile.phone;
+    }
+
+    function saveStoreProfile() {
+      storeProfile.name = document.getElementById('prof-store-name').value.trim() || '우리동네 맛집';
+      storeProfile.ownerTitle = document.getElementById('prof-owner-title').value.trim() || '사장';
+      storeProfile.location = document.getElementById('prof-store-location').value.trim() || '동네';
+      storeProfile.signature = document.getElementById('prof-store-signature').value.trim() || '대표메뉴';
+      storeProfile.phone = document.getElementById('prof-store-phone').value.trim() || '매장연락처';
+
+      localStorage.setItem(STORAGE_KEY_STORE, JSON.stringify(storeProfile));
+      renderHeaderStoreBadge();
+      showToast('매장 정보가 성공적으로 저장되었습니다!');
+    }
+
+    // ==================== 탭 전환 ====================
+    function switchTab(tabId) {
+      ['review', 'sns', 'sms', 'profile'].forEach(t => {
+        const sec = document.getElementById(`tab-${t}`);
+        const btn = document.getElementById(`nav-btn-${t}`);
+        if (t === tabId) {
+          sec.classList.remove('hidden');
+          btn.className = 'flex flex-col items-center gap-1 py-1 text-orange-600 transition-colors';
+          btn.querySelector('span').className = 'text-[11px] font-bold';
+        } else {
+          sec.classList.add('hidden');
+          btn.className = 'flex flex-col items-center gap-1 py-1 text-slate-400 hover:text-slate-700 transition-colors';
+          btn.querySelector('span').className = 'text-[11px] font-medium';
+        }
+      });
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    // ==================== 별점 및 말투 설정 ====================
+    function setReviewRating(rating) {
+      currentRating = rating;
+      const buttons = document.querySelectorAll('#star-rating-box button');
+      buttons.forEach((btn, idx) => {
+        const icon = btn.querySelector('svg') || btn.querySelector('i');
+        if (idx < rating) {
+          btn.className = 'star-btn text-amber-400';
+          if (icon) icon.setAttribute('class', 'w-5 h-5 fill-amber-400 text-amber-400');
+        } else {
+          btn.className = 'star-btn text-slate-300';
+          if (icon) icon.setAttribute('class', 'w-5 h-5 fill-none text-slate-300');
+        }
+      });
+      
+      // 별점이 1~2점이면 자동으로 침착한 방어/수습 톤으로 추천 전환
+      if (rating <= 2 && currentTone !== 'defense') {
+        setTone('defense');
+      }
+    }
+
+    function setTone(tone) {
+      currentTone = tone;
+      const tones = ['kind', 'polite', 'witty', 'defense'];
+      tones.forEach(t => {
+        const btn = document.getElementById(`tone-btn-${t}`);
+        if (t === tone) {
+          btn.className = 'p-2.5 rounded-xl border border-orange-500 bg-orange-50/80 font-bold text-orange-950 flex items-center gap-2 shadow-2xs';
+        } else {
+          btn.className = 'p-2.5 rounded-xl border border-slate-200 hover:border-slate-300 bg-white font-medium text-slate-700 flex items-center gap-2';
+        }
+      });
+    }
+
+    function clearReviewInput() {
+      document.getElementById('input-review-text').value = '';
+      document.getElementById('input-review-menu').value = '';
+    }
+
+    // ==================== 빠른 예시 리뷰 로딩 ====================
+    function loadSampleReview(type) {
+      const textInput = document.getElementById('input-review-text');
+      const menuInput = document.getElementById('input-review-menu');
+      
+      if (type === 'praise') {
+        setReviewRating(5);
+        setTone('kind');
+        textInput.value = '와 진짜 양 엄청 푸짐하고 너무 맛있어요! 고기도 부드럽고 국물이 끝내줍니다. 앞으로 무조건 여기서만 시켜먹을게요!';
+        menuInput.value = '묵은지 돼지찌개 2인세트';
+      } else if (type === 'late') {
+        setReviewRating(3);
+        setTone('polite');
+        textInput.value = '음식은 따뜻하고 맛있었는데 배달이 예정 시간보다 35분이나 늦게 도착해서 아쉬웠습니다.';
+        menuInput.value = '치즈 계란말이';
+      } else if (type === 'salty') {
+        setReviewRating(3);
+        setTone('defense');
+        textInput.value = '평소에 맛있게 먹었는데 오늘은 국물이 제 입맛에는 조금 짜서 물 더 부어서 먹었네요.';
+        menuInput.value = '돼지찌개';
+      } else if (type === 'hair') {
+        setReviewRating(1);
+        setTone('defense');
+        textInput.value = '포장 뜯어서 먹으려는데 음식 안에 머리카락이 나왔어요. 위생 관리 신경 좀 써주세요 기분 상하네요.';
+        menuInput.value = '반찬 세트';
+      } else if (type === 'star5') {
+        setReviewRating(5);
+        setTone('witty');
+        textInput.value = '👍';
+        menuInput.value = '';
+      }
+      
+      showToast('예시 리뷰가 입력되었습니다. [답글 생성]을 눌러보세요!');
+    }
+
+    // ==================== 핵심 AI 답글 생성 로직 ====================
+    function generateReviewReplies() {
+      const text = document.getElementById('input-review-text').value.trim();
+      const menu = document.getElementById('input-review-menu').value.trim() || storeProfile.signature.split(',')[0].trim();
+      const sName = storeProfile.name;
+      const sOwner = storeProfile.ownerTitle;
+
+      if (!text && currentRating > 2) {
+        showToast('손님 리뷰 내용을 입력해주세요!');
+        document.getElementById('input-review-text').focus();
+        return;
+      }
+
+      // 지능형 템플릿 매칭 엔진
+      const isComplaint = (currentRating <= 2) || /머리카락|이물질|벌레|짜요|식었|늦|별로|최악|실망|상했|위생/.test(text);
+      const isLate = /늦|지연|배달/.test(text);
+      const isTaste = /짜|싱겁|매워|맛없|달아/.test(text);
+      const isPraise = (currentRating >= 4) && !isComplaint;
+
+      let r1 = '', r2 = '', r3 = '';
+
+      if (isComplaint) {
+        if (/머리카락|이물질|벌레|위생/.test(text)) {
+          r1 = `안녕하세요, ${sName} ${sOwner}입니다.\n\n먼저 보내주신 소중한 식사 시간에 이물질 문제로 큰 불쾌감과 심려를 끼쳐드려 머리 숙여 진심으로 사죄드립니다.\n\n저희 매장은 위생모 착용과 조리대 청결을 엄격히 규정하고 있으나, 결코 있어서는 안 될 일이 발생하여 참담하고 죄송한 마음뿐입니다.\n\n조리팀 전원에게 경고 조치 및 위생 교육을 즉각 재실시하였으며, 매장 조리 및 포장 동선을 전면 재점검하였습니다.\n\n번거로우시겠지만 매장(${storeProfile.phone})으로 연락 주시면 성심성의껏 정중히 환불 및 재발 방지 조치를 책임지고 도와드리겠습니다. 다시 한번 진심으로 죄송합니다.`;
+          
+          r2 = `[${sName} 긴급 사과문]\n\n고객님, 즐거우셔야 할 식사에 위생 문제로 실망을 드려 정말 죄송합니다.\n\n해당 문제는 절대 가볍게 넘기지 않고, 포장 및 조리 전 과정을 오늘 즉시 철저히 재점검하였습니다.\n\n매장 전화(${storeProfile.phone})로 꼭 연락 부탁드립니다. 즉각적인 환불과 합당한 후속 조치를 반드시 취해드리겠습니다. 부디 너그러운 양해 부탁드립니다.`;
+          
+          r3 = `고객님, ${sName} 대표입니다.\n\n말씀해주신 위생 문제는 어떠한 변명의 여지도 없는 저희의 명백한 불찰입니다. 상심하셨을 고객님께 진심으로 고개 숙여 사과드립니다.\n\n매장 위생 시스템을 전면 재정비하고 두 번 다시 이런 일이 없도록 철저히 관리하겠습니다. 매장으로 연락 주시면 바로 처리해 드리겠습니다. 죄송합니다.`;
+        } else if (isLate) {
+          r1 = `안녕하세요 손님, ${sName} ${sOwner}입니다!\n\n음식은 맛있게 드셔주셨는데, 배달이 너무 늦어져서 기다리시는 동안 얼마나 답답하고 배고프셨을지 생각하니 마음이 너무 무겁고 죄송합니다.\n\n주문이 몰리는 피크 시간대라 하더라도 고객님께 제시간에 따뜻한 음식을 배달해 드리는 것이 기본인데 미흡했습니다. 라이더 배차와 조리 시간을 더욱 세심히 조율하여 다음번엔 약속된 시간 안에 총알같이 도착하도록 개선하겠습니다!\n\n소중한 피드백 감사드리며, 다음 주문 시 요청사항에 남겨주시면 맛있는 서비스로 꼭 보답하겠습니다!`;
+          
+          r2 = `안녕하세요, ${sName}입니다.\n\n소중한 식사 시간에 배달 지연으로 불편을 드려 진심으로 사과드립니다.\n\n맛있게 준비한 음식이 늦게 도착하지 않도록 라이더 배차 및 조리 시간을 개선하겠습니다. 너그럽게 이해해 주신 마음에 보답할 수 있도록 더욱 빠른 배달 약속드리겠습니다. 감사합니다!`;
+          
+          r3 = `손님, 기다리시느라 목 빠지실 뻔했죠? ㅠㅠ ${sName} ${sOwner}입니다.\n\n음식 맛있게 드셔주신 것만으로도 너무 감사한데, 배달이 지연되어 기분 좋은 식사를 온전히 지켜드리지 못해 정말 송구합니다.\n\n다음엔 번개처럼 빠르게 슝 날아갈 수 있게 배달 시스템 꽉 잡겠습니다! 꼭 다시 찾아주세요, 더 잘 모시겠습니다!`;
+        } else {
+          // 간 맞춤 / 일반 아쉬움
+          r1 = `안녕하세요 손님, ${sName} ${sOwner}입니다.\n\n주문해주신 메뉴(${menu})의 간이 고객님 입맛에 완벽히 맞지 않아 아쉬움을 드린 것 같아 마음이 쓰입니다.\n\n저희는 언제나 정성을 다해 조리하지만 입맛과 취향은 손님마다 다를 수 있음을 잘 알고 있습니다. 다음 주문 시 요청사항에 '조금 덜 짜게' 혹은 '조금 더 싱겁게' 남겨주시면 고객님 입맛에 꼭 맞게 1:1 맞춤 조리해 드리겠습니다!\n\n솔직하고 귀한 의견 감사드리며, 더욱 발전하는 ${sName}이 되겠습니다.`;
+          
+          r2 = `안녕하세요, ${sName}입니다.\n\n주문해주신 ${menu} 메뉴가 고객님의 소중한 한 끼에 100% 만족을 드리지 못해 아쉽고 죄송합니다.\n\n보내주신 의견을 참고하여 기본 간과 염도를 세심하게 재점검하겠습니다. 다음 방문 시에는 꼭 더욱 감동적인 맛으로 보답하겠습니다. 솔직한 리뷰 감사드립니다!`;
+          
+          r3 = `고객님 소중한 피드백 감사합니다! ${sName} ${sOwner}입니다.\n\n사람 입맛이 저마다 다 다른데 조금 더 섬세하게 챙기지 못했네요! 다음 주문 주실 때 입맛 취향을 살짝 적어주시면 딱 맞춤 황금비율로 맛있게 해드릴게요. 믿고 다시 찾아주세요!`;
+        }
+      } else {
+        // 칭찬 / 긍정 리뷰
+        if (currentTone === 'kind') {
+          // 다정다감 이모님
+          r1 = `어머나 손님~ 정성 가득한 리뷰에 오늘 하루 피로가 눈 녹듯 싹 사라지네요! ❤️\n\n저희 ${sName}의 자랑인 [${menu}] 맛있게 싹 비워주셨다니 만든 보람이 넘쳐납니다! 언제나 내 가족이 먹는다는 마음으로 좋은 재료 아낌없이 팍팍 넣어 끓이고 있답니다.\n\n날씨가 쌀쌀한데 감기 조심하시구, 따뜻한 밥 생각나실 때 또 들러주세요! 다음에도 정성 가득 담아 맛있게 보답할게요~ 감사합니다!`;
+          
+          r2 = `안녕하세요 소중한 우리 손님! ${sName} ${sOwner}입니다~ 🥰\n\n맛있게 드시고 이렇게 기분 좋은 별점 5점까지 남겨주셔서 제 어깨가 으쓱으쓱 올라가네요!\n\n항상 변함없는 푸짐한 양과 깊은 맛으로 기다리고 있을게요. 오늘 하루도 행복한 일만 가득하시길 진심으로 바랄게요!`;
+          
+          r3 = `우와~ 손님의 따뜻한 칭찬 한마디에 주방 불꽃이 두 배로 신나게 타오릅니다! 🔥\n\n주문해주신 ${menu} 마음에 쏙 드셨다니 너무 뿌듯해요. 앞으로도 손님 입맛에 착 붙는 든든한 한 끼를 약속드릴게요! 단골 등록 꾹 해주시고 자주 봬요~ 늘 건강하세요!`;
+        } else if (currentTone === 'witty') {
+          // 유쾌한 청년사장
+          r1 = `꺄아아아 소리 질러~! 🥳 이 맛에 힘들어도 주방에서 웍 돌립니다!\n\n[${menu}] 싹 비우시고 특급 칭찬까지 남겨주시다니... 오늘 야식 치킨 먹을 명분이 생겼습니다! ㅋㅋㅋ\n\n다음 주문 때 '리뷰 썼던 단골이에요!' 살짝 남겨주시면 주방장 특제 비밀 서비스 팍팍 챙겨서 날아갑니다! 맛있는 하루 보내세요! 🚀`;
+          
+          r2 = `단골 예약 도장 쾅쾅쾅! 쾅! 쾅! 🔨\n\n${sName}의 영원한 VIP로 모실 준비 완료되었습니다. 맛있게 드셔주셔서 정말 짜릿하고 감사해요!\n\n앞으로도 배신 없는 꿀맛 보장하겠습니다. 다음번에도 믿고 맡겨주세요! 피스~! ✌️`;
+          
+          r3 = `별 5개에 꿀맛 인정까지... 감동의 눈물이 앞을 가립니다 🥹\n\n손님 같은 찐 단골분들이 계셔서 저희 매장이 반짝반짝 빛납니다. 언제든 출출하실 때 불러만 주세요, 총알같이 달려가겠습니다!`;
+        } else {
+          // 정중하고 전문적인 셰프
+          r1 = `안녕하십니까, ${sName} 대표입니다.\n\n저희 매장의 ${menu}을(를) 맛있게 즐겨주시고, 따뜻한 격려의 리뷰를 남겨주셔서 진심으로 감사드립니다.\n\n언제나 신선하고 정직한 식재료만을 고집하여 정성을 다하고 있습니다. 고객님의 소중한 한 끼에 만족을 드릴 수 있어 큰 보람을 느낍니다.\n\n앞으로도 변함없는 맛과 청결한 위생으로 보답하겠습니다. 늘 평안하시고 행복하시길 기원합니다.`;
+          
+          r2 = `고객님, ${sName}을 찾아주시고 귀한 시간 내어 긍정적인 평가를 남겨주셔서 깊이 감사드립니다.\n\n보내주신 칭찬은 저희 주방과 매장 전 직원에게 가장 큰 힘이 됩니다. 늘 초심을 잃지 않고 언제 찾아주셔도 한결같이 훌륭한 식사를 대접하겠습니다. 감사합니다.`;
+          
+          r3 = `소중한 고객님, 정성스러운 리뷰 감사합니다.\n\n주문하신 메뉴가 고객님의 입맛에 맞으셨다니 매우 기쁩니다. 고객님의 식탁에 늘 건강하고 맛있는 즐거움이 가득하도록 최선을 다하겠습니다. 다시 뵐 날을 기대하고 있겠습니다.`;
+        }
+      }
+
+      document.getElementById('reply-text-1').textContent = r1;
+      document.getElementById('reply-text-2').textContent = r2;
+      document.getElementById('reply-text-3').textContent = r3;
+
+      document.getElementById('reply-results-container').classList.remove('hidden');
+      document.getElementById('reply-results-container').scrollIntoView({ behavior: 'smooth' });
+      showToast('답글 3종이 완성되었습니다!');
+      lucide.createIcons();
+    }
+
+    // ==================== SNS 홍보글 생성 로직 ====================
+    function setSnsTopic(type, text) {
+      document.getElementById('input-sns-keyword').value = text;
+    }
+
+    function generateSnsPosts() {
+      const keyword = document.getElementById('input-sns-keyword').value.trim();
+      const sName = storeProfile.name;
+      const sLoc = storeProfile.location;
+
+      if (!keyword) {
+        showToast('알리고 싶은 핵심 내용을 입력해주세요!');
+        return;
+      }
+
+      // 인스타그램 버전
+      const instaText = `✨ ${sName} 오늘의 맛있는 소식! ✨
+
+안녕하세요, ${sLoc} 맛집 ${sName}입니다! 🧡
+
+오늘 사장님이 야심차게 준비한 소식 전해드려요! 📢
+👉 "${keyword}"
+
+정직하고 신선한 재료로 아침부터 정성껏 준비했습니다.
+좋은 사람들과 함께 따뜻하고 든든한 시간 보내러 오세요! 🍲
+
+포장 및 배달 주문도 활짝 열려있습니다 🛵💨
+
+📍 매장 위치: ${sLoc} ${sName}
+⏰ 영업 시간: 매일 11:00 ~ 22:00
+📞 문의 전화: ${storeProfile.phone}
+
+━━━━━━━━━━━━━━━
+#${sLoc}맛집 #${sName} #${sLoc}핫플 #동네맛집 #오늘뭐먹지 #맛스타그램 #먹스타그램 #푸드스타그램 #배달맛집 #배달의민족 #배민맛집 #점심메뉴추천 #저녁메뉴추천 #포장맛집 #소상공인화이팅`;
+
+      // 당근마켓 버전
+      const karrotText = `🥕 [${sLoc} 이웃님들께 드리는 ${sName} 소식]
+
+안녕하세요 이웃님들! 
+${sLoc}에서 정성껏 요리하고 있는 [${sName}]입니다. 😊
+
+다름이 아니라 오늘 우리 동네 이웃님들께 꼭 알려드리고 싶은 소식이 있어 글 남겨요!
+
+📢 "${keyword}"
+
+매일 아침 직접 눈으로 보고 고른 신선한 재료로 한 그릇 한 그릇 정성껏 준비하고 있습니다. 
+
+당근 보고 찾아오셨다고 말씀해주시면 [음료수 1캔 / 작은 맛보기 서비스]도 기분 좋게 챙겨드릴게요! 🎁
+
+오늘 식사 메뉴 고민되실 때 편하게 들러주세요! 이웃님들 모두 늘 건강하시고 따뜻한 하루 보내세요~ 감사합니다! ❤️`;
+
+      document.getElementById('sns-insta-text').textContent = instaText;
+      document.getElementById('sns-karrot-text').textContent = karrotText;
+
+      document.getElementById('sns-results-container').classList.remove('hidden');
+      document.getElementById('sns-results-container').scrollIntoView({ behavior: 'smooth' });
+      showToast('인스타 & 당근 홍보글이 완성되었습니다!');
+      lucide.createIcons();
+    }
+
+    // ==================== 단골 문자 생성 로직 ====================
+    function generateSmsType(type) {
+      const sName = storeProfile.name;
+      const sLoc = storeProfile.location;
+      const sPhone = storeProfile.phone;
+      const sig = storeProfile.signature.split(',')[0].trim();
+
+      let title = '';
+      let content = '';
+
+      if (type === 'revisit') {
+        title = '단골 재방문 유도 할인 문자';
+        content = `[${sName}] 사장 드림\n\n안녕하세요, 고객님! 그동안 잘 지내셨나요? 늘 저희 매장을 아껴주셨던 고마운 마음에 보답하고자 깜짝 선물을 준비했습니다.\n\n이번 주말까지 매장 방문 또는 배달 주문 시 본 문자를 보여주시면 [${sig} 10% 즉시 할인]을 쏩니다!\n\n오랜만에 든든한 식사 한 끼 하러 편하게 들러주세요. 한결같은 맛으로 정성껏 모시겠습니다!\n\n■ 매장: ${sName} (${sLoc})\n■ 문의: ${sPhone}`;
+      } else if (type === 'rain') {
+        title = '비 오는 날 감성 혜택 문자';
+        content = `[${sName}] 비 오는 날의 따뜻한 선물 🌧️\n\n창밖으로 비가 촉촉하게 내리는 날이네요. 빗길에 오고 가시는 길 조심하시길 바랍니다.\n\n궂은 날씨에도 저희 매장을 찾아주시는 고마운 손님들을 위해, 오늘 방문하시는 모든 분들께 [노릇한 해물파전/따뜻한 국물 서비스]를 무료로 대접해 드립니다!\n\n빗소리와 함께 든든하고 맛있는 시간 보내세요!\n\n■ 매장: ${sName} (${sLoc})\n■ 문의: ${sPhone}`;
+      } else if (type === 'birthday') {
+        title = '생일 고객 축하 쿠폰 문자';
+        content = `[${sName}] 🎉 생신을 진심으로 축하드립니다! 🎉\n\n고객님의 일 년 중 가장 특별한 날, 세상에서 가장 행복하고 따뜻한 하루가 되시기를 ${sName} 가족 모두가 진심으로 축복합니다!\n\n고객님의 생일을 함께 축하해 드리고자 [생일 특별 사이드 메뉴 무료 쿠폰]을 드립니다. 이달 안으로 언제든 편하게 방문해 주세요!\n\n■ 매장: ${sName} (${sLoc})\n■ 문의: ${sPhone}`;
+      } else if (type === 'holiday') {
+        title = '명절 및 연말 감사 인사 문자';
+        content = `[${sName}] 올 한 해 깊은 감사드립니다.\n\n항상 아낌없는 관심과 애정으로 ${sName}을 찾아주신 고객님 덕분에 올해도 행복하게 매장을 운영할 수 있었습니다.\n\n가족, 친지분들과 함께 웃음과 행복이 가득 넘쳐나는 풍성한 시간 보내시기를 기원합니다. 새해 복 많이 받으세요!\n\n새해에도 더욱 정직하고 감동적인 맛과 서비스로 보답하겠습니다.\n\n- ${sName} 임직원 올림`;
+      }
+
+      document.getElementById('sms-title-badge').textContent = title;
+      document.getElementById('sms-text-result').textContent = content;
+      showToast(`${title}가 완성되었습니다!`);
+    }
+
+    // ==================== 텍스트 복사 & 토스트 ====================
+    function copyGeneratedText(elementId) {
+      const text = document.getElementById(elementId).textContent;
+      navigator.clipboard.writeText(text).then(() => {
+        showToast('클립보드에 복사되었습니다! 배민/SNS에 바로 붙여넣으세요.');
+      }).catch(() => {
+        prompt('아래 문구를 복사하세요:', text);
+      });
+    }
+
+    function showToast(msg) {
+      const toast = document.getElementById('toast');
+      document.getElementById('toast-message').textContent = msg;
+      toast.classList.remove('opacity-0', 'pointer-events-none');
+      setTimeout(() => {
+        toast.classList.add('opacity-0', 'pointer-events-none');
+      }, 2500);
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,23 @@
+{
+  "name": "바로견적 - 현장 1초 모바일 견적 비서",
+  "short_name": "바로견적",
+  "description": "현장직·시공 기술자 전용 1초 모바일 견적 및 수금 관리 비서",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#f8fafc",
+  "theme_color": "#2563eb",
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}

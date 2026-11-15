@@ -1,0 +1,1661 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>바로견적 - 현장직·시공 전용 1초 모바일 견적서</title>
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4090405931385827" crossorigin="anonymous"></script>
+  <!-- PWA & Mobile Web App Meta Tags -->
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#2563eb">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="바로견적">
+  <link rel="apple-touch-icon" href="icon-192.png">
+  <link rel="icon" type="image/png" href="icon-192.png">
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <!-- html2pdf.js for PDF export -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+  <!-- Pretendard Font -->
+  <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" />
+  
+  <style>
+    body {
+      font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, Roboto, sans-serif;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .hide-scrollbar::-webkit-scrollbar {
+      display: none;
+    }
+    .hide-scrollbar {
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
+    /* 서명 패드 캔버스 터치 제어 */
+    canvas {
+      touch-action: none;
+    }
+    /* 직인 도장 효과 */
+    .stamp-seal {
+      border: 2px solid #dc2626;
+      color: #dc2626;
+      font-weight: 900;
+      letter-spacing: 1px;
+      padding: 2px 6px;
+      border-radius: 4px;
+      transform: rotate(-10deg);
+      display: inline-block;
+      user-select: none;
+    }
+  </style>
+</head>
+<body class="bg-slate-100 text-slate-800 antialiased min-h-screen pb-24 select-none">
+
+  <!-- 상단 모바일 헤더 -->
+  <header class="sticky top-0 z-30 bg-white/95 backdrop-blur border-b border-slate-200 px-4 py-3 shadow-sm">
+    <div class="max-w-md mx-auto flex items-center justify-between">
+      <div class="flex items-center gap-2">
+        <div class="w-8 h-8 rounded-lg bg-blue-600 flex items-center justify-center text-white font-bold shadow-md shadow-blue-500/20">
+          <i data-lucide="file-spreadsheet" class="w-4 h-4"></i>
+        </div>
+        <div>
+          <h1 class="text-base font-bold text-slate-900 leading-tight flex items-center gap-1.5">
+            바로견적
+            <span class="text-[10px] font-semibold bg-blue-100 text-blue-700 px-1.5 py-0.5 rounded-full">프로 버전</span>
+          </h1>
+          <p id="header-company-name" class="text-xs text-slate-500">클린케어 마스터</p>
+        </div>
+      </div>
+      <button onclick="openProfileModal()" class="p-2 text-slate-500 hover:text-slate-800 hover:bg-slate-100 rounded-full transition-colors" title="내 정보 설정">
+        <i data-lucide="settings" class="w-5 h-5"></i>
+      </button>
+    </div>
+  </header>
+
+  <!-- 메인 컨테이너 -->
+  <main class="max-w-md mx-auto px-4 py-4 space-y-4">
+
+    <!-- ==================== 1. 탭: 대시보드 화면 ==================== -->
+    <section id="tab-dashboard" class="space-y-4">
+      
+      <!-- 매출 및 미수금 카드 -->
+      <div class="grid grid-cols-2 gap-3">
+        <div class="bg-white p-3.5 rounded-2xl border border-slate-200/80 shadow-sm">
+          <div class="flex items-center gap-1.5 text-xs text-slate-500 mb-1">
+            <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+            이번 달 총 매출
+          </div>
+          <div id="stat-total-revenue" class="text-lg font-black text-slate-900">0원</div>
+          <div id="stat-completed-count" class="text-[11px] text-slate-400 mt-0.5">완료 0건</div>
+        </div>
+        <div class="bg-amber-50/70 p-3.5 rounded-2xl border border-amber-200 shadow-sm">
+          <div class="flex items-center gap-1.5 text-xs text-amber-700 font-medium mb-1">
+            <span class="w-2 h-2 rounded-full bg-amber-500"></span>
+            받을 미수금
+          </div>
+          <div id="stat-pending-revenue" class="text-lg font-black text-amber-600">0원</div>
+          <div id="stat-pending-count" class="text-[11px] text-amber-600/80 mt-0.5">미수 0건</div>
+        </div>
+      </div>
+
+      <!-- 신규 견적서 작성 바로가기 배너 -->
+      <button onclick="switchTab('quote')" class="w-full py-3.5 px-4 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-bold rounded-2xl shadow-lg shadow-blue-500/25 flex items-center justify-between active:scale-[0.98] transition-all">
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-xl bg-white/20 flex items-center justify-center">
+            <i data-lucide="plus" class="w-6 h-6"></i>
+          </div>
+          <div class="text-left">
+            <div class="text-sm font-bold">1분 만에 견적서 작성하기</div>
+            <div class="text-xs text-blue-100 font-normal">터치로 품목 담고 서명/사진 첨부</div>
+          </div>
+        </div>
+        <i data-lucide="chevron-right" class="w-5 h-5 text-white/80"></i>
+      </button>
+
+      <!-- 현장 및 견적 목록 -->
+      <div class="bg-white rounded-2xl border border-slate-200/80 p-4 shadow-sm space-y-3">
+        <div class="flex items-center justify-between">
+          <h2 class="text-sm font-bold text-slate-900 flex items-center gap-1.5">
+            <i data-lucide="list-todo" class="w-4 h-4 text-blue-600"></i>
+            견적 및 현장 목록
+          </h2>
+          <!-- 필터 탭 -->
+          <div class="flex gap-1 text-[11px] bg-slate-100 p-0.5 rounded-lg">
+            <button onclick="filterQuotes('all')" id="filter-all" class="px-2 py-1 rounded-md font-semibold bg-white text-slate-800 shadow-xs">전체</button>
+            <button onclick="filterQuotes('pending')" id="filter-pending" class="px-2 py-1 rounded-md font-medium text-slate-500">진행중</button>
+            <button onclick="filterQuotes('done')" id="filter-done" class="px-2 py-1 rounded-md font-medium text-slate-500">완료</button>
+          </div>
+        </div>
+
+        <div id="quote-list" class="space-y-2.5">
+          <!-- JS로 동적 렌더링 -->
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== 2. 탭: 견적서 작성 화면 ==================== -->
+    <section id="tab-quote" class="hidden space-y-4">
+      
+      <!-- 상단 제목 -->
+      <div class="flex items-center justify-between">
+        <div>
+          <h2 class="text-base font-bold text-slate-900">새 견적서 작성</h2>
+          <p class="text-xs text-slate-500">원하는 옵션을 켜고 끌 수 있습니다.</p>
+        </div>
+        <button onclick="resetQuoteForm()" class="text-xs text-slate-500 hover:text-rose-500 flex items-center gap-1">
+          <i data-lucide="rotate-ccw" class="w-3.5 h-3.5"></i> 초기화
+        </button>
+      </div>
+
+      <!-- 1. 고객 정보 입력 -->
+      <div class="bg-white rounded-2xl border border-slate-200/80 p-4 shadow-sm space-y-3">
+        <h3 class="text-xs font-bold text-slate-500 uppercase tracking-wider flex items-center gap-1">
+          <i data-lucide="user" class="w-3.5 h-3.5 text-blue-600"></i> 고객 및 현장 정보
+        </h3>
+        <div class="grid grid-cols-2 gap-2">
+          <div>
+            <label class="block text-[11px] font-medium text-slate-600 mb-1">고객명 *</label>
+            <input type="text" id="input-customer-name" placeholder="예: 홍길동 고객님" class="w-full text-xs px-3 py-2 rounded-xl border border-slate-200 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 outline-none">
+          </div>
+          <div>
+            <label class="block text-[11px] font-medium text-slate-600 mb-1">연락처 *</label>
+            <input type="tel" id="input-customer-phone" placeholder="010-0000-0000" class="w-full text-xs px-3 py-2 rounded-xl border border-slate-200 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 outline-none">
+          </div>
+        </div>
+        <div>
+          <label class="block text-[11px] font-medium text-slate-600 mb-1">현장 주소</label>
+          <input type="text" id="input-customer-address" placeholder="예: 서울 강남구 테헤란로 101동 202호" class="w-full text-xs px-3 py-2 rounded-xl border border-slate-200 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 outline-none">
+        </div>
+        <div>
+          <label class="block text-[11px] font-medium text-slate-600 mb-1">시공 / 작업 예정일</label>
+          <input type="date" id="input-service-date" class="w-full text-xs px-3 py-2 rounded-xl border border-slate-200 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 outline-none">
+        </div>
+      </div>
+
+      <!-- 2. 빠른 품목 담기 (프리셋 선택) -->
+      <div class="bg-white rounded-2xl border border-slate-200/80 p-4 shadow-sm space-y-3">
+        <div class="flex items-center justify-between">
+          <h3 class="text-xs font-bold text-slate-500 uppercase tracking-wider flex items-center gap-1">
+            <i data-lucide="tag" class="w-3.5 h-3.5 text-blue-600"></i> 빠른 품목 터치 추가
+          </h3>
+          <button onclick="switchTab('presets')" class="text-[11px] text-blue-600 font-semibold hover:underline flex items-center gap-0.5">
+            단가 수정 <i data-lucide="arrow-right" class="w-3 h-3"></i>
+          </button>
+        </div>
+        <p class="text-[11px] text-slate-400">자주 쓰는 항목을 탭하면 견적서에 자동 추가됩니다.</p>
+        <div id="quick-preset-chips" class="flex flex-wrap gap-1.5">
+          <!-- JS로 프리셋 칩 동적 생성 -->
+        </div>
+      </div>
+
+      <!-- 3. 선택된 견적 품목 목록 & 수량 조절 -->
+      <div class="bg-white rounded-2xl border border-slate-200/80 p-4 shadow-sm space-y-3">
+        <div class="flex items-center justify-between">
+          <h3 class="text-xs font-bold text-slate-500 uppercase tracking-wider flex items-center gap-1">
+            <i data-lucide="shopping-cart" class="w-3.5 h-3.5 text-blue-600"></i> 견적 세부 내역
+          </h3>
+          <button onclick="addCustomItemRow()" class="text-[11px] bg-slate-100 hover:bg-slate-200 text-slate-700 px-2 py-1 rounded-lg font-medium flex items-center gap-1">
+            <i data-lucide="plus" class="w-3 h-3"></i> 직접 입력 추가
+          </button>
+        </div>
+
+        <div id="selected-items-container" class="space-y-2">
+          <!-- 선택된 품목 리스트 -->
+        </div>
+
+        <div id="empty-items-notice" class="text-center py-6 text-slate-400 text-xs">
+          선택된 품목이 없습니다.<br>위의 '빠른 품목 터치 추가' 버튼을 눌러주세요.
+        </div>
+      </div>
+
+      <!-- 4. 합계 및 옵션 (VAT / 할인) -->
+      <div class="bg-white rounded-2xl border border-slate-200/80 p-4 shadow-sm space-y-3">
+        <div class="flex items-center justify-between text-xs text-slate-600">
+          <span>품목 공급가액</span>
+          <span id="calc-subtotal" class="font-bold text-slate-900">0원</span>
+        </div>
+        
+        <!-- 할인금액 입력 -->
+        <div class="flex items-center justify-between text-xs text-slate-600">
+          <span class="flex items-center gap-1">
+            <i data-lucide="percent" class="w-3.5 h-3.5 text-rose-500"></i> 현장 할인 (절사)
+          </span>
+          <div class="flex items-center gap-1">
+            <input type="number" id="input-discount" value="0" min="0" step="5000" oninput="recalculateQuote()" class="w-24 text-right text-xs px-2 py-1 border border-slate-200 rounded-lg outline-none focus:border-blue-500">
+            <span>원</span>
+          </div>
+        </div>
+
+        <!-- 부가세 토글 -->
+        <div class="flex items-center justify-between pt-1 border-t border-slate-100">
+          <label for="toggle-vat" class="text-xs text-slate-600 flex items-center gap-1.5 cursor-pointer">
+            <input type="checkbox" id="toggle-vat" onchange="recalculateQuote()" class="w-4 h-4 text-blue-600 rounded border-slate-300 focus:ring-blue-500">
+            <span>부가세(VAT 10%) 포함</span>
+          </label>
+          <span id="calc-vat" class="text-xs text-slate-500 font-medium">0원</span>
+        </div>
+
+        <!-- 최종 견적 총액 -->
+        <div class="pt-3 border-t border-slate-200 flex items-baseline justify-between">
+          <span class="text-sm font-bold text-slate-900">최종 견적 총액</span>
+          <div class="text-right">
+            <span id="calc-total" class="text-2xl font-black text-blue-600">0원</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- ==================== ✨ 신규 실전 부가 옵션 카드 ==================== -->
+      <div class="bg-white rounded-2xl border border-blue-200 p-4 shadow-sm space-y-4">
+        <h3 class="text-xs font-bold text-blue-900 uppercase tracking-wider flex items-center justify-between">
+          <span class="flex items-center gap-1">
+            <i data-lucide="sliders" class="w-3.5 h-3.5 text-blue-600"></i> 견적서 실무 옵션 설정
+          </span>
+          <span class="text-[10px] bg-blue-100 text-blue-700 px-2 py-0.5 rounded-full font-semibold">선택 가능</span>
+        </h3>
+
+        <!-- 옵션 A: 계약금 & 잔금 분할 계산 토글 -->
+        <div class="pt-1 space-y-2.5">
+          <label class="flex items-center justify-between text-xs font-bold text-slate-800 cursor-pointer">
+            <span class="flex items-center gap-1.5">
+              <i data-lucide="split" class="w-4 h-4 text-indigo-500"></i> 계약금 / 잔금 분할 표기
+            </span>
+            <input type="checkbox" id="toggle-split-payment" onchange="toggleSplitPaymentOption()" class="w-4 h-4 text-blue-600 rounded border-slate-300 focus:ring-blue-500">
+          </label>
+          
+          <div id="split-payment-controls" class="hidden p-3 bg-slate-50 border border-slate-200 rounded-xl space-y-2 text-xs">
+            <div class="text-[11px] text-slate-500">계약금 비율을 선택하거나 직접 입력하세요:</div>
+            <div class="flex gap-1.5">
+              <button type="button" onclick="setDepositRatio(0.1)" class="px-2.5 py-1 bg-white border border-slate-200 rounded-lg text-slate-700 hover:bg-blue-50 font-medium">10%</button>
+              <button type="button" onclick="setDepositRatio(0.2)" class="px-2.5 py-1 bg-white border border-slate-200 rounded-lg text-slate-700 hover:bg-blue-50 font-medium">20%</button>
+              <button type="button" onclick="setDepositRatio(0.3)" class="px-2.5 py-1 bg-blue-600 text-white border border-blue-600 rounded-lg font-bold" id="btn-ratio-30">30% (권장)</button>
+              <button type="button" onclick="setDepositRatio(0.5)" class="px-2.5 py-1 bg-white border border-slate-200 rounded-lg text-slate-700 hover:bg-blue-50 font-medium">50%</button>
+            </div>
+            <div class="grid grid-cols-2 gap-2 pt-1 border-t border-slate-200/60">
+              <div class="text-indigo-950 font-semibold">계약금: <span id="display-deposit-amount" class="text-indigo-600 font-bold">0원</span></div>
+              <div class="text-slate-700 font-semibold text-right">시공후 잔금: <span id="display-balance-amount" class="text-slate-900 font-bold">0원</span></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 옵션 B: 현장 사진 첨부 토글 -->
+        <div class="pt-2 border-t border-slate-100 space-y-2.5">
+          <label class="flex items-center justify-between text-xs font-bold text-slate-800 cursor-pointer">
+            <span class="flex items-center gap-1.5">
+              <i data-lucide="camera" class="w-4 h-4 text-emerald-600"></i> 현장 사진 첨부 (시공 전/실측)
+            </span>
+            <input type="checkbox" id="toggle-photo-attach" onchange="togglePhotoOption()" class="w-4 h-4 text-blue-600 rounded border-slate-300 focus:ring-blue-500">
+          </label>
+          
+          <div id="photo-controls" class="hidden p-3 bg-slate-50 border border-slate-200 rounded-xl space-y-2 text-xs">
+            <input type="file" id="photo-file-input" accept="image/*" multiple onchange="handlePhotoUpload(this)" class="text-[11px] block w-full text-slate-500 file:mr-2 file:py-1 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-emerald-50 file:text-emerald-700 hover:file:bg-emerald-100">
+            <div id="photo-preview-grid" class="flex flex-wrap gap-2 pt-1">
+              <!-- 첨부된 사진 썸네일 미리보기 -->
+            </div>
+            <p class="text-[10px] text-slate-400">스마트폰 카메라로 촬영하거나 갤러리 사진을 최대 3장까지 견적서에 첨부합니다.</p>
+          </div>
+        </div>
+
+        <!-- 옵션 C: 직인/서명 날인 토글 -->
+        <div class="pt-2 border-t border-slate-100 space-y-2.5">
+          <label class="flex items-center justify-between text-xs font-bold text-slate-800 cursor-pointer">
+            <span class="flex items-center gap-1.5">
+              <i data-lucide="pen-tool" class="w-4 h-4 text-rose-500"></i> 서명 또는 공식 직인(도장) 날인
+            </span>
+            <input type="checkbox" id="toggle-signature-attach" onchange="toggleSignatureOption()" class="w-4 h-4 text-blue-600 rounded border-slate-300 focus:ring-blue-500">
+          </label>
+          
+          <div id="signature-controls" class="hidden p-3 bg-slate-50 border border-slate-200 rounded-xl space-y-2 text-xs">
+            <div class="flex items-center gap-3 mb-1">
+              <label class="flex items-center gap-1 cursor-pointer">
+                <input type="radio" name="sign-mode" value="seal" checked onchange="switchSignMode('seal')">
+                <span class="text-[11px] font-medium">회사 공식 직인(자동 도장)</span>
+              </label>
+              <label class="flex items-center gap-1 cursor-pointer">
+                <input type="radio" name="sign-mode" value="draw" onchange="switchSignMode('draw')">
+                <span class="text-[11px] font-medium">손가락 직접 서명</span>
+              </label>
+            </div>
+
+            <!-- 모드 1: 자동 직인 도장 미리보기 -->
+            <div id="seal-preview-box" class="p-3 bg-white border border-slate-200 rounded-lg flex items-center justify-between">
+              <span class="text-[11px] text-slate-500">견적서에 찍힐 직인 도장:</span>
+              <div id="stamp-seal-badge" class="stamp-seal text-xs">클린케어 직인</div>
+            </div>
+
+            <!-- 모드 2: 캔버스 손가락 서명 패드 -->
+            <div id="draw-signature-box" class="hidden space-y-1.5">
+              <div class="flex justify-between items-center text-[10px] text-slate-500">
+                <span>아래 박스에 손가락이나 마우스로 서명하세요:</span>
+                <button type="button" onclick="clearSignatureCanvas()" class="text-rose-500 underline">서명 지우기</button>
+              </div>
+              <canvas id="signature-canvas" width="320" height="100" class="w-full bg-white border border-slate-300 rounded-lg cursor-crosshair shadow-inner"></canvas>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- 5. 특이사항 및 메모 -->
+      <div class="bg-white rounded-2xl border border-slate-200/80 p-4 shadow-sm space-y-2">
+        <label class="block text-[11px] font-medium text-slate-600">현장 특이사항 / 안내문구</label>
+        <textarea id="input-memo" rows="2" placeholder="예: 시공 후 1년간 무상 AS 보증. 주차비는 별도 실비 청구됩니다." class="w-full text-xs p-2.5 rounded-xl border border-slate-200 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 outline-none"></textarea>
+      </div>
+
+      <!-- 완료 및 견적서 발행 버튼 -->
+      <button onclick="previewAndSaveQuote()" class="w-full py-4 bg-blue-600 hover:bg-blue-700 active:scale-[0.99] text-white font-bold rounded-2xl shadow-lg shadow-blue-500/25 flex items-center justify-center gap-2 transition-all">
+        <i data-lucide="file-check" class="w-5 h-5"></i>
+        <span>견적서 완성 & 모바일 전송하기</span>
+      </button>
+
+    </section>
+
+    <!-- ==================== 3. 탭: 단가표/프리셋 관리 화면 ==================== -->
+    <section id="tab-presets" class="hidden space-y-4">
+      <div class="flex items-center justify-between">
+        <div>
+          <h2 class="text-base font-bold text-slate-900">내 단가표 프리셋 관리</h2>
+          <p class="text-xs text-slate-500">업종별 추천 단가표를 바로 불러올 수 있습니다.</p>
+        </div>
+        <button onclick="openAddPresetModal()" class="text-xs bg-blue-600 hover:bg-blue-700 text-white px-3 py-1.5 rounded-xl font-bold flex items-center gap-1 shadow-sm">
+          <i data-lucide="plus" class="w-3.5 h-3.5"></i> 품목 추가
+        </button>
+      </div>
+
+      <!-- 업종별 템플릿 불러오기 드롭다운 -->
+      <div class="bg-white rounded-2xl border border-slate-200/80 p-3.5 shadow-sm space-y-2">
+        <div class="flex items-center justify-between">
+          <span class="text-xs font-bold text-slate-800">업종별 표준 단가표 템플릿</span>
+          <span class="text-[10px] text-blue-600 bg-blue-50 px-2 py-0.5 rounded font-semibold">6개 업종 지원</span>
+        </div>
+        <div class="flex gap-2">
+          <select id="preset-category-select" class="text-xs border border-slate-200 rounded-xl px-2.5 py-2 bg-slate-50 font-medium outline-none flex-1">
+            <option value="aircon">에어컨/가전 청소</option>
+            <option value="interior">인테리어/리모델링</option>
+            <option value="plumbing">배관/설비 수리</option>
+            <option value="wallpaper">도배/장판</option>
+            <option value="electric">전기/조명 시공</option>
+            <option value="movein">입주/이사 청소</option>
+          </select>
+          <button onclick="loadSelectedCategoryDefaults()" class="px-3 py-2 bg-slate-900 hover:bg-slate-800 text-white font-bold rounded-xl text-xs whitespace-nowrap">
+            불러오기
+          </button>
+        </div>
+      </div>
+
+      <!-- 등록된 프리셋 목록 -->
+      <div id="presets-list-container" class="space-y-2">
+        <!-- JS 동적 렌더링 -->
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ==================== 하단 모바일 고정 탭 바 ==================== -->
+  <nav class="fixed bottom-0 left-0 right-0 z-40 bg-white/95 backdrop-blur border-t border-slate-200 py-2">
+    <div class="max-w-md mx-auto grid grid-cols-3 text-center">
+      <button onclick="switchTab('dashboard')" id="nav-btn-dashboard" class="flex flex-col items-center gap-1 py-1 text-blue-600 transition-colors">
+        <i data-lucide="layout-dashboard" class="w-5 h-5"></i>
+        <span class="text-[11px] font-bold">현장 현황</span>
+      </button>
+      <button onclick="switchTab('quote')" id="nav-btn-quote" class="flex flex-col items-center gap-1 py-1 text-slate-400 hover:text-slate-700 transition-colors">
+        <i data-lucide="file-plus-2" class="w-5 h-5"></i>
+        <span class="text-[11px] font-medium">견적 작성</span>
+      </button>
+      <button onclick="switchTab('presets')" id="nav-btn-presets" class="flex flex-col items-center gap-1 py-1 text-slate-400 hover:text-slate-700 transition-colors">
+        <i data-lucide="tags" class="w-5 h-5"></i>
+        <span class="text-[11px] font-medium">단가표</span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- ==================== 모달 1: 견적서 완성 & 전송/PDF 모달 ==================== -->
+  <div id="quote-preview-modal" class="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm hidden flex items-end sm:items-center justify-center p-0 sm:p-4 transition-opacity">
+    <div class="bg-white w-full max-w-md rounded-t-3xl sm:rounded-3xl max-h-[90vh] flex flex-col overflow-hidden shadow-2xl">
+      <!-- 모달 헤더 -->
+      <div class="px-5 py-3 border-b border-slate-200 flex items-center justify-between">
+        <div>
+          <h3 class="text-base font-bold text-slate-900">모바일 문서 미리보기 & 전송</h3>
+          <p class="text-xs text-slate-500">용도에 맞춰 즉시 견적서 / 거래명세서 / 영수증으로 전환됩니다.</p>
+        </div>
+        <button onclick="closeQuotePreviewModal()" class="p-1.5 text-slate-400 hover:text-slate-700 rounded-full hover:bg-slate-100">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+
+      <!-- 양식 전환 탭 (견적서 / 거래명세서 / 간이영수증) -->
+      <div class="px-4 py-2 bg-slate-100/90 border-b border-slate-200 flex items-center justify-between text-xs">
+        <span class="text-[11px] font-bold text-slate-500">문서 양식:</span>
+        <div class="flex gap-1 bg-white p-0.5 rounded-lg border border-slate-200 shadow-xs">
+          <button type="button" onclick="setDocumentType('quote')" id="doc-type-quote" class="px-2.5 py-1 rounded-md font-bold bg-blue-600 text-white shadow-xs transition-all">견적서</button>
+          <button type="button" onclick="setDocumentType('statement')" id="doc-type-statement" class="px-2.5 py-1 rounded-md font-medium text-slate-600 hover:text-slate-900 transition-all">거래명세서</button>
+          <button type="button" onclick="setDocumentType('receipt')" id="doc-type-receipt" class="px-2.5 py-1 rounded-md font-medium text-slate-600 hover:text-slate-900 transition-all">간이영수증</button>
+        </div>
+      </div>
+
+      <!-- 모달 바디: 견적서 양식 영역 (PDF로 캡처되는 대상) -->
+      <div class="p-4 overflow-y-auto hide-scrollbar space-y-4 bg-slate-50 flex-1">
+        
+        <div id="printable-quote" class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm space-y-4 text-slate-800">
+          <!-- 견적서 제목 및 기본 정보 -->
+          <div class="border-b-2 border-slate-900 pb-3">
+            <div class="flex items-center justify-between">
+              <span id="pv-doc-title" class="text-xl font-black text-slate-900 tracking-wider">견 적 서</span>
+              <span id="pv-quote-id" class="text-[11px] text-slate-400">NO. 2026-001</span>
+            </div>
+            <div class="text-xs text-slate-500 mt-1 flex justify-between">
+              <span>발행일자: <b id="pv-issue-date" class="text-slate-700">2026-11-10</b></span>
+              <span>작업예정: <b id="pv-work-date" class="text-slate-700">2026-11-15</b></span>
+            </div>
+          </div>
+
+          <!-- 공급자 및 공급받는 자 정보 -->
+          <div class="grid grid-cols-2 gap-3 text-xs bg-slate-50 p-3 rounded-xl border border-slate-100">
+            <div class="space-y-0.5 border-r border-slate-200 pr-2">
+              <span class="text-[10px] font-bold text-blue-600 uppercase">공급받는 자</span>
+              <div id="pv-customer-name" class="font-bold text-slate-900 text-sm">홍길동 고객님</div>
+              <div id="pv-customer-phone" class="text-slate-500">010-1234-5678</div>
+              <div id="pv-customer-address" class="text-slate-500 text-[11px] break-all">서울 강남구 테헤란로</div>
+            </div>
+            <div class="space-y-0.5 pl-1 relative">
+              <span class="text-[10px] font-bold text-slate-400 uppercase">공급자 (시공사)</span>
+              <div id="pv-company-name" class="font-bold text-slate-900 text-sm">클린케어 마스터</div>
+              <div id="pv-company-rep" class="text-slate-500">대표자: 김대표</div>
+              <div id="pv-company-phone" class="text-slate-500">010-9876-5432</div>
+              <div id="pv-company-reg" class="text-slate-400 text-[10px]">123-45-67890</div>
+
+              <!-- 공급자 직인 / 서명 오버레이 -->
+              <div id="pv-seal-container" class="absolute right-0 top-3 pointer-events-none">
+                <!-- JS로 자동 도장 또는 서명 이미지 삽입 -->
+              </div>
+            </div>
+          </div>
+
+          <!-- 견적 총액 배너 -->
+          <div class="bg-blue-50 border border-blue-200 p-3 rounded-xl flex items-center justify-between">
+            <span class="text-xs font-bold text-blue-900">합계 견적 금액</span>
+            <span id="pv-total-amount" class="text-lg font-black text-blue-700">180,000원</span>
+          </div>
+
+          <!-- 품목 테이블 -->
+          <div class="border border-slate-200 rounded-xl overflow-hidden">
+            <table class="w-full text-xs text-left">
+              <thead class="bg-slate-100 text-slate-600 font-semibold text-[11px]">
+                <tr>
+                  <th class="py-2 px-2.5">품목 및 시공내용</th>
+                  <th class="py-2 px-2 text-center w-12">수량</th>
+                  <th class="py-2 px-2 text-right">단가</th>
+                  <th class="py-2 px-2.5 text-right">금액</th>
+                </tr>
+              </thead>
+              <tbody id="pv-items-table" class="divide-y divide-slate-100 text-slate-700">
+                <!-- JS 동적 렌더링 -->
+              </tbody>
+            </table>
+          </div>
+
+          <!-- 계산 요약 & 계약금/잔금 분할 표기 영역 -->
+          <div class="text-xs space-y-1.5 pt-1 text-slate-600 border-t border-slate-100">
+            <div class="flex justify-between">
+              <span>공급가액</span>
+              <span id="pv-subtotal" class="font-medium">180,000원</span>
+            </div>
+            <div id="pv-discount-row" class="flex justify-between text-rose-600">
+              <span>현장 할인</span>
+              <span id="pv-discount">-0원</span>
+            </div>
+            <div id="pv-vat-row" class="flex justify-between text-slate-500">
+              <span>부가세 (VAT 10%)</span>
+              <span id="pv-vat">0원</span>
+            </div>
+
+            <!-- 계약금 및 잔금 분할 영역 (옵션 활성화 시 노출) -->
+            <div id="pv-split-payment-box" class="hidden mt-2 p-2.5 bg-indigo-50/70 border border-indigo-200 rounded-xl space-y-1 text-indigo-950 font-medium">
+              <div class="flex justify-between font-bold text-indigo-900">
+                <span>계약금 (<span id="pv-deposit-ratio-text">30%</span>)</span>
+                <span id="pv-deposit-val">0원</span>
+              </div>
+              <div class="flex justify-between text-[11px] text-indigo-800">
+                <span>시공 완료 후 잔금</span>
+                <span id="pv-balance-val">0원</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- 첨부된 현장 사진 영역 (옵션 활성화 시 노출) -->
+          <div id="pv-photos-box" class="hidden space-y-1.5 pt-2 border-t border-slate-200">
+            <span class="text-[11px] font-bold text-slate-700 flex items-center gap-1">
+              <i data-lucide="image" class="w-3.5 h-3.5 text-emerald-600"></i> 현장 실측 / 사전 확인 사진
+            </span>
+            <div id="pv-photos-gallery" class="grid grid-cols-2 gap-2">
+              <!-- 첨부 사진 이미지 태그 -->
+            </div>
+          </div>
+
+          <!-- 입금 계좌 및 특이사항 안내 -->
+          <div class="bg-slate-50 p-3 rounded-xl border border-slate-100 text-xs space-y-1.5">
+            <div class="flex items-center gap-1 font-bold text-slate-800">
+              <i data-lucide="credit-card" class="w-3.5 h-3.5 text-blue-600"></i> 입금 계좌 안내
+            </div>
+            <div id="pv-bank-info" class="text-slate-600 font-mono text-[11px]">
+              신한은행 110-123-456789 (예금주: 김대표)
+            </div>
+            <div id="pv-memo" class="text-[11px] text-slate-500 pt-1 border-t border-slate-200/60">
+              * 작업 후 계좌 입금 부탁드립니다.
+            </div>
+          </div>
+
+          <div class="text-[10px] text-center text-slate-400">
+            위와 같이 성실히 시공 및 완료할 것을 약속드립니다.
+          </div>
+        </div>
+
+      </div>
+
+      <!-- 모달 푸터: 액션 버튼들 -->
+      <div class="p-4 bg-white border-t border-slate-200 space-y-2">
+        <div class="grid grid-cols-2 gap-2">
+          <!-- 카카오톡 복사용 텍스트 -->
+          <button onclick="copyKakaoQuoteText()" class="py-3 px-3 bg-amber-400 hover:bg-amber-500 text-amber-950 font-bold rounded-xl text-xs flex items-center justify-center gap-1.5 shadow-sm active:scale-95 transition-all">
+            <i data-lucide="message-square" class="w-4 h-4"></i>
+            <span>카톡 전송문구 복사</span>
+          </button>
+          <!-- PDF 파일 다운로드 -->
+          <button onclick="exportQuotePDF()" class="py-3 px-3 bg-slate-900 hover:bg-slate-800 text-white font-bold rounded-xl text-xs flex items-center justify-center gap-1.5 shadow-sm active:scale-95 transition-all">
+            <i data-lucide="download" class="w-4 h-4"></i>
+            <span>PDF 견적서 다운로드</span>
+          </button>
+        </div>
+        <button onclick="closeQuotePreviewModal(); switchTab('dashboard')" class="w-full py-2.5 text-xs text-slate-600 hover:text-slate-900 font-medium">
+          확인 완료 (대시보드로 이동)
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== 모달 2: 내 정보/시공업체 프로필 설정 ==================== -->
+  <div id="profile-modal" class="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm hidden flex items-center justify-center p-4">
+    <div class="bg-white w-full max-w-sm rounded-3xl p-5 shadow-2xl space-y-4">
+      <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+        <h3 class="text-sm font-bold text-slate-900 flex items-center gap-1.5">
+          <i data-lucide="briefcase" class="w-4 h-4 text-blue-600"></i> 내 사업자/시공 정보 설정
+        </h3>
+        <button onclick="closeProfileModal()" class="text-slate-400 hover:text-slate-700">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+
+      <div class="space-y-3 text-xs">
+        <div>
+          <label class="block font-medium text-slate-600 mb-1">상호명 (업체명)</label>
+          <input type="text" id="prof-company" placeholder="예: 클린케어 마스터" class="w-full px-3 py-2 border border-slate-200 rounded-xl outline-none focus:border-blue-500">
+        </div>
+        <div class="grid grid-cols-2 gap-2">
+          <div>
+            <label class="block font-medium text-slate-600 mb-1">대표자명</label>
+            <input type="text" id="prof-rep" placeholder="홍길동" class="w-full px-3 py-2 border border-slate-200 rounded-xl outline-none focus:border-blue-500">
+          </div>
+          <div>
+            <label class="block font-medium text-slate-600 mb-1">연락처</label>
+            <input type="tel" id="prof-phone" placeholder="010-0000-0000" class="w-full px-3 py-2 border border-slate-200 rounded-xl outline-none focus:border-blue-500">
+          </div>
+        </div>
+        <div>
+          <label class="block font-medium text-slate-600 mb-1">사업자등록번호 (선택)</label>
+          <input type="text" id="prof-reg" placeholder="000-00-00000" class="w-full px-3 py-2 border border-slate-200 rounded-xl outline-none focus:border-blue-500">
+        </div>
+        <div>
+          <label class="block font-medium text-slate-600 mb-1">입금 계좌 정보</label>
+          <input type="text" id="prof-bank" placeholder="신한 110-000-000000 (예금주: 홍길동)" class="w-full px-3 py-2 border border-slate-200 rounded-xl outline-none focus:border-blue-500">
+        </div>
+
+        <!-- 데이터 백업 및 복원 -->
+        <div class="pt-2 border-t border-slate-200/80 space-y-2">
+          <label class="block font-bold text-slate-700 text-xs flex items-center gap-1">
+            <i data-lucide="shield-check" class="w-3.5 h-3.5 text-blue-600"></i> 데이터 안심 백업 & 기기 이동
+          </label>
+          <p class="text-[10px] text-slate-400">핸드폰을 바꾸거나 데이터를 보관할 때 원클릭으로 백업/복원합니다.</p>
+          <div class="grid grid-cols-2 gap-2">
+            <button type="button" onclick="exportBackupData()" class="py-2 px-2 bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold rounded-xl text-[11px] flex items-center justify-center gap-1 shadow-xs">
+              <i data-lucide="download" class="w-3.5 h-3.5"></i> 백업 파일 저장
+            </button>
+            <label class="py-2 px-2 bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold rounded-xl text-[11px] flex items-center justify-center gap-1 shadow-xs cursor-pointer text-center">
+              <i data-lucide="upload" class="w-3.5 h-3.5"></i> 백업 불러오기
+              <input type="file" accept=".json" onchange="importBackupData(this)" class="hidden">
+            </label>
+          </div>
+        </div>
+      </div>
+
+      <button onclick="saveProfile()" class="w-full py-3 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl text-xs shadow-md">
+        저장하기
+      </button>
+    </div>
+  </div>
+
+  <!-- ==================== 모달 3: 프리셋 품목 추가 모달 ==================== -->
+  <div id="add-preset-modal" class="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm hidden flex items-center justify-center p-4">
+    <div class="bg-white w-full max-w-sm rounded-3xl p-5 shadow-2xl space-y-4">
+      <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+        <h3 class="text-sm font-bold text-slate-900 flex items-center gap-1.5">
+          <i data-lucide="tag" class="w-4 h-4 text-blue-600"></i> 새 단가 품목 추가
+        </h3>
+        <button onclick="closeAddPresetModal()" class="text-slate-400 hover:text-slate-700">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+
+      <div class="space-y-3 text-xs">
+        <div>
+          <label class="block font-medium text-slate-600 mb-1">품목명 *</label>
+          <input type="text" id="new-preset-name" placeholder="예: 스탠드 에어컨 완전분해 세척" class="w-full px-3 py-2 border border-slate-200 rounded-xl outline-none focus:border-blue-500">
+        </div>
+        <div class="grid grid-cols-2 gap-2">
+          <div>
+            <label class="block font-medium text-slate-600 mb-1">기본 단가 (원) *</label>
+            <input type="number" id="new-preset-price" step="5000" placeholder="120000" class="w-full px-3 py-2 border border-slate-200 rounded-xl outline-none focus:border-blue-500">
+          </div>
+          <div>
+            <label class="block font-medium text-slate-600 mb-1">단위</label>
+            <input type="text" id="new-preset-unit" placeholder="대, 회, 평 등" value="대" class="w-full px-3 py-2 border border-slate-200 rounded-xl outline-none focus:border-blue-500">
+          </div>
+        </div>
+      </div>
+
+      <button onclick="saveNewPreset()" class="w-full py-3 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl text-xs shadow-md">
+        단가표에 등록
+      </button>
+    </div>
+  </div>
+
+  <!-- 토스트 알림창 -->
+  <div id="toast" class="fixed top-5 left-1/2 -translate-x-1/2 z-50 bg-slate-900 text-white text-xs px-4 py-2.5 rounded-full shadow-xl opacity-0 pointer-events-none transition-all duration-300 flex items-center gap-2">
+    <i data-lucide="check-circle-2" class="w-4 h-4 text-emerald-400"></i>
+    <span id="toast-message">알림</span>
+  </div>
+
+  <!-- ==================== 자바스크립트 로직 ==================== -->
+  <script>
+    const STORAGE_KEY_PRESETS = 'quickquote_presets';
+    const STORAGE_KEY_QUOTES = 'quickquote_quotes';
+    const STORAGE_KEY_PROFILE = 'quickquote_profile';
+
+    // 6대 업종별 추천 단가표
+    const DEFAULT_PRESETS_BY_CAT = {
+      aircon: [
+        { id: 'ac-1', name: '벽걸이 에어컨 기본 분해 세척', price: 80000, unit: '대' },
+        { id: 'ac-2', name: '스탠드 에어컨 완전 분해 세척', price: 140000, unit: '대' },
+        { id: 'ac-3', name: '2in1(스탠드+벽걸이) 패키지', price: 200000, unit: '세트' },
+        { id: 'ac-4', name: '실외기 고압 스팀 청소', price: 40000, unit: '대' },
+        { id: 'ac-5', name: '가스 충전 (R-410A / R-22)', price: 60000, unit: '회' }
+      ],
+      interior: [
+        { id: 'in-1', name: '문틀 및 도어 교체 시공', price: 250000, unit: '세트' },
+        { id: 'in-2', name: '욕실 줄눈 시공 (바닥+벽체)', price: 350000, unit: '실' },
+        { id: 'in-3', name: 'LED 평판등 교체 (거실/방)', price: 70000, unit: '개' },
+        { id: 'in-4', name: '싱크대 상판 연마 및 코팅', price: 180000, unit: '식' }
+      ],
+      plumbing: [
+        { id: 'pl-1', name: '변기 배관 막힘 관통 소통', price: 90000, unit: '회' },
+        { id: 'pl-2', name: '싱크대 원홀 수전 교체 (부품포함)', price: 120000, unit: '개' },
+        { id: 'pl-3', name: '세면대 팝업/트랩 교체', price: 70000, unit: '개' },
+        { id: 'pl-4', name: '욕실 샤워 수전 교체', price: 110000, unit: '개' }
+      ],
+      wallpaper: [
+        { id: 'wp-1', name: '실크 벽지 시공 (천장+벽체)', price: 45000, unit: '평' },
+        { id: 'wp-2', name: '합지 장폭 도배 시공', price: 30000, unit: '평' },
+        { id: 'wp-3', name: '장판 2.2T 시공 (인건비 포함)', price: 38000, unit: '평' },
+        { id: 'wp-4', name: '기존 벽지/장판 폐기물 처리', price: 100000, unit: '식' }
+      ],
+      electric: [
+        { id: 'el-1', name: '노후 차단기/분전함 교체', price: 150000, unit: '식' },
+        { id: 'el-2', name: '콘센트/스위치 1구 교체', price: 25000, unit: '개' },
+        { id: 'el-3', name: '라인 조명 및 다운라이트 배선 타공', price: 40000, unit: '구' },
+        { id: 'el-4', name: '누전 점검 및 배선 수리 출장', price: 80000, unit: '회' }
+      ],
+      movein: [
+        { id: 'mv-1', name: '아파트 입주 청소 (평당)', price: 15000, unit: '평' },
+        { id: 'mv-2', name: '욕실 나노 코팅 (물때 방지)', price: 120000, unit: '실' },
+        { id: 'mv-3', name: '새집증후군 피톤치드 연무 소독', price: 90000, unit: '회' },
+        { id: 'mv-4', name: '외창 유리창 전문 세척', price: 80000, unit: '창' }
+      ]
+    };
+
+    let userProfile = {
+      companyName: '클린케어 마스터',
+      repName: '김대표',
+      phone: '010-9876-5432',
+      regNumber: '123-45-67890',
+      bankInfo: '신한은행 110-123-456789 (예금주: 김대표)'
+    };
+
+    let presets = [];
+    let quotes = [];
+    let currentQuoteItems = [];
+    let activeFilter = 'all';
+    let currentPreviewQuote = null;
+
+    // 부가 옵션 상태
+    let depositRatio = 0.3; // 30%
+    let attachedPhotos = []; // base64 data URLs
+    let signMode = 'seal'; // 'seal' or 'draw'
+    let signatureCanvas = null;
+    let signatureCtx = null;
+    let isDrawing = false;
+
+    // 초기화
+    window.addEventListener('DOMContentLoaded', () => {
+      loadData();
+      renderProfile();
+      renderPresetChips();
+      renderPresetsList();
+      renderDashboard();
+      initSignatureCanvas();
+      lucide.createIcons();
+
+      const today = new Date().toISOString().split('T')[0];
+      const serviceDateEl = document.getElementById('input-service-date');
+      if (serviceDateEl) serviceDateEl.value = today;
+    });
+
+    function loadData() {
+      const savedProfile = localStorage.getItem(STORAGE_KEY_PROFILE);
+      if (savedProfile) userProfile = JSON.parse(savedProfile);
+
+      const savedPresets = localStorage.getItem(STORAGE_KEY_PRESETS);
+      if (savedPresets) {
+        presets = JSON.parse(savedPresets);
+      } else {
+        presets = [...DEFAULT_PRESETS_BY_CAT.aircon];
+        savePresets();
+      }
+
+      const savedQuotes = localStorage.getItem(STORAGE_KEY_QUOTES);
+      if (savedQuotes) {
+        quotes = JSON.parse(savedQuotes);
+      } else {
+        quotes = [
+          {
+            id: 'Q-2026-001',
+            customerName: '이서연 고객님',
+            phone: '010-3321-8899',
+            address: '서울 송파구 잠실동 리센츠 104동',
+            serviceDate: '2026-11-12',
+            issueDate: '2026-11-09',
+            items: [
+              { name: '스탠드 에어컨 완전 분해 세척', price: 140000, qty: 1, unit: '대' },
+              { name: '실외기 고압 스팀 청소', price: 40000, qty: 1, unit: '대' }
+            ],
+            subtotal: 180000,
+            discount: 10000,
+            vat: 0,
+            total: 170000,
+            hasSplit: true,
+            depositRatio: 0.3,
+            deposit: 51000,
+            balance: 119000,
+            hasPhotos: false,
+            photos: [],
+            hasSignature: true,
+            signType: 'seal',
+            memo: '시공 후 1년 무상 AS 보증. 주차 가능 여부 확인 완료.',
+            status: 'pending'
+          }
+        ];
+        saveQuotes();
+      }
+    }
+
+    function saveQuotes() {
+      localStorage.setItem(STORAGE_KEY_QUOTES, JSON.stringify(quotes));
+    }
+
+    function savePresets() {
+      localStorage.setItem(STORAGE_KEY_PRESETS, JSON.stringify(presets));
+    }
+
+    function showToast(msg) {
+      const toast = document.getElementById('toast');
+      const msgEl = document.getElementById('toast-message');
+      msgEl.textContent = msg;
+      toast.classList.remove('opacity-0', 'pointer-events-none');
+      toast.classList.add('opacity-100');
+      setTimeout(() => {
+        toast.classList.remove('opacity-100');
+        toast.classList.add('opacity-0', 'pointer-events-none');
+      }, 2200);
+    }
+
+    function switchTab(tabId) {
+      document.getElementById('tab-dashboard').classList.add('hidden');
+      document.getElementById('tab-quote').classList.add('hidden');
+      document.getElementById('tab-presets').classList.add('hidden');
+
+      const navBtns = ['dashboard', 'quote', 'presets'];
+      navBtns.forEach(name => {
+        const btn = document.getElementById(`nav-btn-${name}`);
+        btn.classList.remove('text-blue-600');
+        btn.classList.add('text-slate-400');
+        btn.querySelector('span').classList.remove('font-bold');
+        btn.querySelector('span').classList.add('font-medium');
+      });
+
+      document.getElementById(`tab-${tabId}`).classList.remove('hidden');
+      const activeBtn = document.getElementById(`nav-btn-${tabId}`);
+      activeBtn.classList.add('text-blue-600');
+      activeBtn.classList.remove('text-slate-400');
+      activeBtn.querySelector('span').classList.add('font-bold');
+      activeBtn.querySelector('span').classList.remove('font-medium');
+
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      lucide.createIcons();
+    }
+
+    // ==================== 부가 옵션 컨트롤 ====================
+    function toggleSplitPaymentOption() {
+      const enabled = document.getElementById('toggle-split-payment').checked;
+      const box = document.getElementById('split-payment-controls');
+      box.classList.toggle('hidden', !enabled);
+      recalculateQuote();
+    }
+
+    function setDepositRatio(ratio) {
+      depositRatio = ratio;
+      recalculateQuote();
+      showToast(`계약금 비율이 ${(ratio*100).toFixed(0)}%로 설정되었습니다.`);
+    }
+
+    function togglePhotoOption() {
+      const enabled = document.getElementById('toggle-photo-attach').checked;
+      const box = document.getElementById('photo-controls');
+      box.classList.toggle('hidden', !enabled);
+    }
+
+    function handlePhotoUpload(input) {
+      if (!input.files || input.files.length === 0) return;
+      const maxFiles = 3;
+      Array.from(input.files).slice(0, maxFiles).forEach(file => {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          attachedPhotos.push(e.target.result);
+          renderPhotoThumbnails();
+        };
+        reader.readAsDataURL(file);
+      });
+      showToast('사진이 첨부되었습니다.');
+    }
+
+    function renderPhotoThumbnails() {
+      const grid = document.getElementById('photo-preview-grid');
+      grid.innerHTML = '';
+      attachedPhotos.forEach((src, idx) => {
+        const div = document.createElement('div');
+        div.className = 'relative w-16 h-16 rounded-lg overflow-hidden border border-slate-300 shadow-xs';
+        div.innerHTML = `
+          <img src="${src}" class="w-full h-full object-cover">
+          <button type="button" onclick="removePhoto(${idx})" class="absolute top-0.5 right-0.5 bg-black/70 text-white rounded-full p-0.5 hover:bg-rose-600">
+            <i data-lucide="x" class="w-3 h-3"></i>
+          </button>
+        `;
+        grid.appendChild(div);
+      });
+      lucide.createIcons();
+    }
+
+    function removePhoto(idx) {
+      attachedPhotos.splice(idx, 1);
+      renderPhotoThumbnails();
+    }
+
+    function toggleSignatureOption() {
+      const enabled = document.getElementById('toggle-signature-attach').checked;
+      const box = document.getElementById('signature-controls');
+      box.classList.toggle('hidden', !enabled);
+    }
+
+    function switchSignMode(mode) {
+      signMode = mode;
+      document.getElementById('seal-preview-box').classList.toggle('hidden', mode !== 'seal');
+      document.getElementById('draw-signature-box').classList.toggle('hidden', mode !== 'draw');
+    }
+
+    function initSignatureCanvas() {
+      signatureCanvas = document.getElementById('signature-canvas');
+      if (!signatureCanvas) return;
+      signatureCtx = signatureCanvas.getContext('2d');
+      signatureCtx.lineWidth = 2.5;
+      signatureCtx.lineCap = 'round';
+      signatureCtx.strokeStyle = '#0f172a';
+
+      function getPos(e) {
+        const rect = signatureCanvas.getBoundingClientRect();
+        const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+        const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+        return {
+          x: (clientX - rect.left) * (signatureCanvas.width / rect.width),
+          y: (clientY - rect.top) * (signatureCanvas.height / rect.height)
+        };
+      }
+
+      function start(e) {
+        e.preventDefault();
+        isDrawing = true;
+        const pos = getPos(e);
+        signatureCtx.beginPath();
+        signatureCtx.moveTo(pos.x, pos.y);
+      }
+
+      function draw(e) {
+        if (!isDrawing) return;
+        e.preventDefault();
+        const pos = getPos(e);
+        signatureCtx.lineTo(pos.x, pos.y);
+        signatureCtx.stroke();
+      }
+
+      function stop() {
+        isDrawing = false;
+      }
+
+      signatureCanvas.addEventListener('mousedown', start);
+      signatureCanvas.addEventListener('mousemove', draw);
+      window.addEventListener('mouseup', stop);
+
+      signatureCanvas.addEventListener('touchstart', start, { passive: false });
+      signatureCanvas.addEventListener('touchmove', draw, { passive: false });
+      window.addEventListener('touchend', stop);
+    }
+
+    function clearSignatureCanvas() {
+      if (!signatureCanvas || !signatureCtx) return;
+      signatureCtx.clearRect(0, 0, signatureCanvas.width, signatureCanvas.height);
+    }
+
+    // ==================== 계산 로직 ====================
+    function recalculateQuote() {
+      const subtotal = currentQuoteItems.reduce((acc, item) => acc + (item.price * item.qty), 0);
+      const discountInput = document.getElementById('input-discount');
+      const discount = Math.max(0, parseInt(discountInput.value) || 0);
+
+      const hasVat = document.getElementById('toggle-vat').checked;
+      const baseAfterDiscount = Math.max(0, subtotal - discount);
+      const vat = hasVat ? Math.round(baseAfterDiscount * 0.1) : 0;
+      const total = baseAfterDiscount + vat;
+
+      const hasSplit = document.getElementById('toggle-split-payment').checked;
+      const deposit = hasSplit ? Math.round(total * depositRatio) : 0;
+      const balance = hasSplit ? (total - deposit) : 0;
+
+      document.getElementById('calc-subtotal').textContent = subtotal.toLocaleString() + '원';
+      document.getElementById('calc-vat').textContent = vat > 0 ? `+${vat.toLocaleString()}원` : '0원 (미포함)';
+      document.getElementById('calc-total').textContent = total.toLocaleString() + '원';
+
+      if (hasSplit) {
+        document.getElementById('display-deposit-amount').textContent = deposit.toLocaleString() + '원';
+        document.getElementById('display-balance-amount').textContent = balance.toLocaleString() + '원';
+      }
+
+      return { subtotal, discount, vat, total, hasSplit, deposit, balance };
+    }
+
+    // ==================== 견적 작성 로직 ====================
+    function renderPresetChips() {
+      const container = document.getElementById('quick-preset-chips');
+      container.innerHTML = '';
+      presets.forEach(p => {
+        const btn = document.createElement('button');
+        btn.className = 'text-xs bg-slate-100 hover:bg-blue-50 hover:text-blue-700 hover:border-blue-200 border border-slate-200/80 px-2.5 py-1.5 rounded-xl font-medium text-slate-700 transition-all flex items-center gap-1 active:scale-95';
+        btn.innerHTML = `
+          <span>+ ${p.name}</span>
+          <span class="text-[10px] text-blue-600 font-bold">${(p.price/10000).toFixed(p.price%10000===0?0:1)}만</span>
+        `;
+        btn.onclick = () => addPresetToQuote(p);
+        container.appendChild(btn);
+      });
+    }
+
+    function addPresetToQuote(p) {
+      const existing = currentQuoteItems.find(item => item.name === p.name);
+      if (existing) {
+        existing.qty += 1;
+      } else {
+        currentQuoteItems.push({
+          name: p.name,
+          price: p.price,
+          qty: 1,
+          unit: p.unit || '개'
+        });
+      }
+      renderQuoteItems();
+      recalculateQuote();
+      showToast(`'${p.name}' 추가됨`);
+    }
+
+    function addCustomItemRow() {
+      const name = prompt('추가할 품목명을 입력하세요 (예: 특수 필터 교체):');
+      if (!name) return;
+      const priceStr = prompt('단가를 입력하세요 (숫자만, 예: 50000):', '50000');
+      const price = parseInt(priceStr) || 0;
+      currentQuoteItems.push({
+        name: name,
+        price: price,
+        qty: 1,
+        unit: '식'
+      });
+      renderQuoteItems();
+      recalculateQuote();
+    }
+
+    function renderQuoteItems() {
+      const container = document.getElementById('selected-items-container');
+      const emptyNotice = document.getElementById('empty-items-notice');
+      container.innerHTML = '';
+
+      if (currentQuoteItems.length === 0) {
+        emptyNotice.classList.remove('hidden');
+        return;
+      }
+      emptyNotice.classList.add('hidden');
+
+      currentQuoteItems.forEach((item, index) => {
+        const row = document.createElement('div');
+        row.className = 'flex items-center justify-between p-2.5 bg-slate-50 border border-slate-200/80 rounded-xl text-xs';
+        row.innerHTML = `
+          <div class="flex-1 pr-2">
+            <div class="font-bold text-slate-800">${item.name}</div>
+            <div class="text-[11px] text-slate-500">${item.price.toLocaleString()}원 / ${item.unit}</div>
+          </div>
+          <div class="flex items-center gap-2">
+            <div class="flex items-center border border-slate-300 rounded-lg bg-white overflow-hidden">
+              <button onclick="changeItemQty(${index}, -1)" class="px-2 py-1 text-slate-600 hover:bg-slate-100 font-bold">-</button>
+              <span class="px-2 text-xs font-bold text-slate-800 min-w-[20px] text-center">${item.qty}</span>
+              <button onclick="changeItemQty(${index}, 1)" class="px-2 py-1 text-slate-600 hover:bg-slate-100 font-bold">+</button>
+            </div>
+            <div class="w-20 text-right font-black text-slate-900 text-xs">
+              ${(item.price * item.qty).toLocaleString()}원
+            </div>
+            <button onclick="removeItem(${index})" class="text-slate-400 hover:text-rose-500 p-1">
+              <i data-lucide="x" class="w-3.5 h-3.5"></i>
+            </button>
+          </div>
+        `;
+        container.appendChild(row);
+      });
+      lucide.createIcons();
+    }
+
+    function changeItemQty(index, delta) {
+      currentQuoteItems[index].qty += delta;
+      if (currentQuoteItems[index].qty <= 0) {
+        currentQuoteItems.splice(index, 1);
+      }
+      renderQuoteItems();
+      recalculateQuote();
+    }
+
+    function removeItem(index) {
+      currentQuoteItems.splice(index, 1);
+      renderQuoteItems();
+      recalculateQuote();
+    }
+
+    function resetQuoteForm() {
+      if (confirm('작성 중인 견적서 내용을 초기화할까요?')) {
+        currentQuoteItems = [];
+        attachedPhotos = [];
+        document.getElementById('input-customer-name').value = '';
+        document.getElementById('input-customer-phone').value = '';
+        document.getElementById('input-customer-address').value = '';
+        document.getElementById('input-discount').value = '0';
+        document.getElementById('input-memo').value = '';
+        document.getElementById('toggle-vat').checked = false;
+        document.getElementById('toggle-split-payment').checked = false;
+        document.getElementById('split-payment-controls').classList.add('hidden');
+        document.getElementById('toggle-photo-attach').checked = false;
+        document.getElementById('photo-controls').classList.add('hidden');
+        document.getElementById('photo-preview-grid').innerHTML = '';
+        document.getElementById('toggle-signature-attach').checked = false;
+        document.getElementById('signature-controls').classList.add('hidden');
+        clearSignatureCanvas();
+        renderQuoteItems();
+        recalculateQuote();
+      }
+    }
+
+    // ==================== 견적서 미리보기 및 저장 ====================
+    function previewAndSaveQuote() {
+      const customerName = document.getElementById('input-customer-name').value.trim();
+      const phone = document.getElementById('input-customer-phone').value.trim();
+
+      if (!customerName) {
+        alert('고객명을 입력해주세요.');
+        document.getElementById('input-customer-name').focus();
+        return;
+      }
+      if (currentQuoteItems.length === 0) {
+        alert('최소 1개 이상의 시공 품목을 추가해주세요.');
+        return;
+      }
+
+      const { subtotal, discount, vat, total, hasSplit, deposit, balance } = recalculateQuote();
+      const hasPhotos = document.getElementById('toggle-photo-attach').checked;
+      const hasSignature = document.getElementById('toggle-signature-attach').checked;
+      
+      let signatureDataUrl = null;
+      if (hasSignature && signMode === 'draw' && signatureCanvas) {
+        signatureDataUrl = signatureCanvas.toDataURL();
+      }
+
+      const newQuote = {
+        id: `Q-${new Date().getFullYear()}-${String(quotes.length + 1).padStart(3, '0')}`,
+        customerName: customerName,
+        phone: phone || '연락처 미기재',
+        address: document.getElementById('input-customer-address').value.trim() || '현장 주소 협의',
+        serviceDate: document.getElementById('input-service-date').value || new Date().toISOString().split('T')[0],
+        issueDate: new Date().toISOString().split('T')[0],
+        items: [...currentQuoteItems],
+        subtotal,
+        discount,
+        vat,
+        total,
+        hasSplit,
+        depositRatio,
+        deposit,
+        balance,
+        hasPhotos,
+        photos: hasPhotos ? [...attachedPhotos] : [],
+        hasSignature,
+        signType: signMode,
+        signatureDataUrl,
+        memo: document.getElementById('input-memo').value.trim() || '시공 후 1년 무상 AS 보증 및 품질 보장',
+        status: 'pending'
+      };
+
+      quotes.unshift(newQuote);
+      saveQuotes();
+      renderDashboard();
+
+      showQuotePreview(newQuote);
+    }
+
+    function viewExistingQuote(id) {
+      const q = quotes.find(item => item.id === id);
+      if (q) showQuotePreview(q);
+    }
+
+    function showQuotePreview(q) {
+      currentPreviewQuote = q;
+
+      document.getElementById('pv-quote-id').textContent = `NO. ${q.id}`;
+      document.getElementById('pv-issue-date').textContent = q.issueDate;
+      document.getElementById('pv-work-date').textContent = q.serviceDate;
+      
+      document.getElementById('pv-customer-name').textContent = q.customerName;
+      document.getElementById('pv-customer-phone').textContent = q.phone;
+      document.getElementById('pv-customer-address').textContent = q.address;
+
+      document.getElementById('pv-company-name').textContent = userProfile.companyName;
+      document.getElementById('pv-company-rep').textContent = `대표자: ${userProfile.repName}`;
+      document.getElementById('pv-company-phone').textContent = userProfile.phone;
+      document.getElementById('pv-company-reg').textContent = userProfile.regNumber ? `사업자: ${userProfile.regNumber}` : '';
+      document.getElementById('pv-bank-info').textContent = userProfile.bankInfo;
+
+      document.getElementById('pv-total-amount').textContent = q.total.toLocaleString() + '원';
+      document.getElementById('pv-subtotal').textContent = q.subtotal.toLocaleString() + '원';
+      
+      const discountRow = document.getElementById('pv-discount-row');
+      if (q.discount > 0) {
+        discountRow.classList.remove('hidden');
+        document.getElementById('pv-discount').textContent = `-${q.discount.toLocaleString()}원`;
+      } else {
+        discountRow.classList.add('hidden');
+      }
+
+      const vatRow = document.getElementById('pv-vat-row');
+      if (q.vat > 0) {
+        vatRow.classList.remove('hidden');
+        document.getElementById('pv-vat').textContent = `+${q.vat.toLocaleString()}원`;
+      } else {
+        vatRow.classList.add('hidden');
+      }
+
+      // 계약금 / 잔금 분할 영역
+      const splitBox = document.getElementById('pv-split-payment-box');
+      if (q.hasSplit && q.deposit > 0) {
+        splitBox.classList.remove('hidden');
+        document.getElementById('pv-deposit-ratio-text').textContent = `${(q.depositRatio * 100).toFixed(0)}%`;
+        document.getElementById('pv-deposit-val').textContent = q.deposit.toLocaleString() + '원';
+        document.getElementById('pv-balance-val').textContent = q.balance.toLocaleString() + '원';
+      } else {
+        splitBox.classList.add('hidden');
+      }
+
+      // 서명 / 도장 영역
+      const sealContainer = document.getElementById('pv-seal-container');
+      sealContainer.innerHTML = '';
+      if (q.hasSignature) {
+        if (q.signType === 'draw' && q.signatureDataUrl) {
+          sealContainer.innerHTML = `<img src="${q.signatureDataUrl}" class="w-16 h-8 object-contain">`;
+        } else {
+          sealContainer.innerHTML = `<div class="stamp-seal text-[11px]">${userProfile.companyName.slice(0, 4)} 직인</div>`;
+        }
+      }
+
+      // 현장 사진 갤러리 영역
+      const photosBox = document.getElementById('pv-photos-box');
+      const gallery = document.getElementById('pv-photos-gallery');
+      gallery.innerHTML = '';
+      if (q.hasPhotos && q.photos && q.photos.length > 0) {
+        photosBox.classList.remove('hidden');
+        q.photos.forEach(imgSrc => {
+          const img = document.createElement('img');
+          img.src = imgSrc;
+          img.className = 'w-full h-24 object-cover rounded-lg border border-slate-200';
+          gallery.appendChild(img);
+        });
+      } else {
+        photosBox.classList.add('hidden');
+      }
+
+      document.getElementById('pv-memo').textContent = `* ${q.memo}`;
+
+      // 테이블 렌더링
+      const tbody = document.getElementById('pv-items-table');
+      tbody.innerHTML = '';
+      q.items.forEach(item => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td class="py-2 px-2.5 font-medium">${item.name}</td>
+          <td class="py-2 px-2 text-center text-slate-500">${item.qty}${item.unit}</td>
+          <td class="py-2 px-2 text-right text-slate-500">${item.price.toLocaleString()}원</td>
+          <td class="py-2 px-2.5 text-right font-bold text-slate-900">${(item.price * item.qty).toLocaleString()}원</td>
+        `;
+        tbody.appendChild(tr);
+      });
+
+      document.getElementById('quote-preview-modal').classList.remove('hidden');
+      lucide.createIcons();
+    }
+
+    let currentDocType = 'quote'; // 'quote' | 'statement' | 'receipt'
+
+    function setDocumentType(type) {
+      currentDocType = type;
+      const titleEl = document.getElementById('pv-doc-title');
+      const btnQuote = document.getElementById('doc-type-quote');
+      const btnStatement = document.getElementById('doc-type-statement');
+      const btnReceipt = document.getElementById('doc-type-receipt');
+
+      [
+        { id: 'quote', btn: btnQuote },
+        { id: 'statement', btn: btnStatement },
+        { id: 'receipt', btn: btnReceipt }
+      ].forEach(item => {
+        if (!item.btn) return;
+        if (item.id === type) {
+          item.btn.className = 'px-2.5 py-1 rounded-md font-bold bg-blue-600 text-white shadow-xs transition-all';
+        } else {
+          item.btn.className = 'px-2.5 py-1 rounded-md font-medium text-slate-600 hover:text-slate-900 transition-all';
+        }
+      });
+
+      if (type === 'quote') {
+        titleEl.textContent = '견 적 서';
+      } else if (type === 'statement') {
+        titleEl.textContent = '거 래 명 세 서';
+      } else if (type === 'receipt') {
+        titleEl.textContent = '간 이 영 수 증 (영수용)';
+      }
+    }
+
+    function closeQuotePreviewModal() {
+      document.getElementById('quote-preview-modal').classList.add('hidden');
+    }
+
+    // ==================== 카카오톡 공유 텍스트 & PDF 다운로드 ====================
+    function copyKakaoQuoteText() {
+      if (!currentPreviewQuote) return;
+      const q = currentPreviewQuote;
+      const docName = currentDocType === 'quote' ? '견적서' : (currentDocType === 'statement' ? '거래명세서' : '간이영수증');
+      
+      let itemsListStr = q.items.map((it, i) => `  ${i+1}. ${it.name} (${it.qty}${it.unit}): ${(it.price * it.qty).toLocaleString()}원`).join('\n');
+      
+      let splitStr = '';
+      if (q.hasSplit && q.deposit > 0) {
+        splitStr = `\n■ 분할 결제 안내:\n  - 계약금(${(q.depositRatio*100).toFixed(0)}%): ${q.deposit.toLocaleString()}원\n  - 시공완료 후 잔금: ${q.balance.toLocaleString()}원\n`;
+      }
+
+      const text = `[${userProfile.companyName} ${docName} 안내]
+안녕하세요, ${q.customerName}! 요청하신 ${docName}입니다.
+
+■ 시공예정일: ${q.serviceDate}
+■ 현장주소: ${q.address}
+
+■ 상세 내역:
+${itemsListStr}
+
+------------------------
+▶ 최종 ${docName} 금액: ${q.total.toLocaleString()}원${splitStr}------------------------
+■ 입금 계좌: ${userProfile.bankInfo}
+■ 안내사항: ${q.memo}
+
+문의사항 있으시면 언제든 연락 부탁드립니다. 감사합니다!
+- ${userProfile.companyName} (대표: ${userProfile.repName} / ${userProfile.phone})`;
+
+      navigator.clipboard.writeText(text).then(() => {
+        showToast(`${docName} 카톡 문구가 복사되었습니다!`);
+      }).catch(() => {
+        prompt('아래 문구를 복사해서 카카오톡에 붙여넣으세요:', text);
+      });
+    }
+
+    function exportQuotePDF() {
+      const element = document.getElementById('printable-quote');
+      const docName = currentDocType === 'quote' ? '견적서' : (currentDocType === 'statement' ? '거래명세서' : '간이영수증');
+      showToast(`${docName} PDF 생성 중입니다...`);
+      
+      const opt = {
+        margin: [8, 8, 8, 8],
+        filename: `${docName}_${currentPreviewQuote.customerName}_${currentPreviewQuote.id}.pdf`,
+        image: { type: 'jpeg', quality: 0.98 },
+        html2canvas: { scale: 2, useCORS: true },
+        jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+      };
+
+      html2pdf().set(opt).from(element).save().then(() => {
+        showToast(`${docName} PDF 다운로드가 완료되었습니다!`);
+      });
+    }
+
+    // ==================== 데이터 백업 및 복원 ====================
+    function exportBackupData() {
+      const backupObj = {
+        version: '1.0',
+        exportedAt: new Date().toISOString(),
+        userProfile: userProfile,
+        presets: presets,
+        quotes: quotes
+      };
+      const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(backupObj, null, 2));
+      const dlAnchor = document.createElement('a');
+      const dateStr = new Date().toISOString().slice(0, 10);
+      dlAnchor.setAttribute("href", dataStr);
+      dlAnchor.setAttribute("download", `바로견적_전체백업_${dateStr}.json`);
+      document.body.appendChild(dlAnchor);
+      dlAnchor.click();
+      dlAnchor.remove();
+      showToast('전체 백업 파일이 저장되었습니다.');
+    }
+
+    function importBackupData(input) {
+      if (!input.files || input.files.length === 0) return;
+      const file = input.files[0];
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        try {
+          const imported = JSON.parse(e.target.result);
+          if (imported.userProfile) {
+            userProfile = imported.userProfile;
+            localStorage.setItem(STORAGE_KEY_PROFILE, JSON.stringify(userProfile));
+          }
+          if (imported.presets && Array.isArray(imported.presets)) {
+            presets = imported.presets;
+            localStorage.setItem(STORAGE_KEY_PRESETS, JSON.stringify(presets));
+          }
+          if (imported.quotes && Array.isArray(imported.quotes)) {
+            quotes = imported.quotes;
+            localStorage.setItem(STORAGE_KEY_QUOTES, JSON.stringify(quotes));
+          }
+          renderProfile();
+          renderDashboard();
+          renderPresetChips();
+          renderPresetsList();
+          closeProfileModal();
+          showToast('백업 데이터를 성공적으로 복원했습니다!');
+        } catch (err) {
+          alert('올바른 백업 JSON 파일이 아닙니다.');
+        }
+      };
+      reader.readAsText(file);
+    }
+
+    // ==================== 단가표 / 프리셋 관리 ====================
+    function renderPresetsList() {
+      const container = document.getElementById('presets-list-container');
+      container.innerHTML = '';
+      presets.forEach((p, idx) => {
+        const item = document.createElement('div');
+        item.className = 'flex items-center justify-between p-3 bg-white border border-slate-200/90 rounded-xl shadow-xs text-xs';
+        item.innerHTML = `
+          <div>
+            <div class="font-bold text-slate-800">${p.name}</div>
+            <div class="text-[11px] text-blue-600 font-semibold">${p.price.toLocaleString()}원 <span class="text-slate-400 font-normal">/ ${p.unit}</span></div>
+          </div>
+          <button onclick="deletePreset(${idx})" class="p-1 text-slate-400 hover:text-rose-500">
+            <i data-lucide="trash-2" class="w-4 h-4"></i>
+          </button>
+        `;
+        container.appendChild(item);
+      });
+      lucide.createIcons();
+    }
+
+    function loadSelectedCategoryDefaults() {
+      const cat = document.getElementById('preset-category-select').value;
+      const defaults = DEFAULT_PRESETS_BY_CAT[cat] || [];
+      
+      if (confirm(`선택한 업종의 표준 단가표(${defaults.length}개 항목)를 추가할까요?`)) {
+        defaults.forEach(d => {
+          if (!presets.find(p => p.name === d.name)) {
+            presets.push({ ...d, id: 'cat-' + Date.now() + Math.random() });
+          }
+        });
+        savePresets();
+        renderPresetChips();
+        renderPresetsList();
+        showToast('추천 단가표가 반영되었습니다.');
+      }
+    }
+
+    function openAddPresetModal() {
+      document.getElementById('new-preset-name').value = '';
+      document.getElementById('new-preset-price').value = '';
+      document.getElementById('add-preset-modal').classList.remove('hidden');
+    }
+
+    function closeAddPresetModal() {
+      document.getElementById('add-preset-modal').classList.add('hidden');
+    }
+
+    function saveNewPreset() {
+      const name = document.getElementById('new-preset-name').value.trim();
+      const price = parseInt(document.getElementById('new-preset-price').value);
+      const unit = document.getElementById('new-preset-unit').value.trim() || '식';
+
+      if (!name || isNaN(price)) {
+        alert('품목명과 단가를 올바르게 입력해주세요.');
+        return;
+      }
+
+      presets.push({
+        id: 'user-' + Date.now(),
+        name,
+        price,
+        unit
+      });
+
+      savePresets();
+      renderPresetChips();
+      renderPresetsList();
+      closeAddPresetModal();
+      showToast('새 단가 품목이 등록되었습니다.');
+    }
+
+    function deletePreset(idx) {
+      if (confirm('이 품목을 단가표에서 삭제하시겠습니까?')) {
+        presets.splice(idx, 1);
+        savePresets();
+        renderPresetChips();
+        renderPresetsList();
+        showToast('삭제되었습니다.');
+      }
+    }
+
+    // ==================== 업체 정보 프로필 관리 ====================
+    function renderProfile() {
+      document.getElementById('header-company-name').textContent = userProfile.companyName;
+      const stampBadge = document.getElementById('stamp-seal-badge');
+      if (stampBadge) stampBadge.textContent = `${userProfile.companyName.slice(0, 5)} 직인`;
+    }
+
+    function openProfileModal() {
+      document.getElementById('prof-company').value = userProfile.companyName;
+      document.getElementById('prof-rep').value = userProfile.repName;
+      document.getElementById('prof-phone').value = userProfile.phone;
+      document.getElementById('prof-reg').value = userProfile.regNumber;
+      document.getElementById('prof-bank').value = userProfile.bankInfo;
+      document.getElementById('profile-modal').classList.remove('hidden');
+      lucide.createIcons();
+    }
+
+    function closeProfileModal() {
+      document.getElementById('profile-modal').classList.add('hidden');
+    }
+
+    function saveProfile() {
+      userProfile.companyName = document.getElementById('prof-company').value.trim() || '내 시공업체';
+      userProfile.repName = document.getElementById('prof-rep').value.trim() || '대표';
+      userProfile.phone = document.getElementById('prof-phone').value.trim() || '연락처 미등록';
+      userProfile.regNumber = document.getElementById('prof-reg').value.trim();
+      userProfile.bankInfo = document.getElementById('prof-bank').value.trim() || '입금 계좌 미등록';
+
+      localStorage.setItem(STORAGE_KEY_PROFILE, JSON.stringify(userProfile));
+      renderProfile();
+      closeProfileModal();
+      showToast('시공업체 정보가 저장되었습니다.');
+    }
+
+    // ==================== 대시보드 렌더링 ====================
+    function renderDashboard() {
+      let totalRevenue = 0;
+      let completedCount = 0;
+      let pendingRevenue = 0;
+      let pendingCount = 0;
+
+      quotes.forEach(q => {
+        if (q.status === 'done') {
+          totalRevenue += q.total;
+          completedCount++;
+        } else {
+          pendingRevenue += q.total;
+          pendingCount++;
+        }
+      });
+
+      document.getElementById('stat-total-revenue').textContent = totalRevenue.toLocaleString() + '원';
+      document.getElementById('stat-completed-count').textContent = `입금 완료 ${completedCount}건`;
+      document.getElementById('stat-pending-revenue').textContent = pendingRevenue.toLocaleString() + '원';
+      document.getElementById('stat-pending-count').textContent = `미수/진행 ${pendingCount}건`;
+
+      renderQuoteList();
+    }
+
+    function filterQuotes(type) {
+      activeFilter = type;
+      ['all', 'pending', 'done'].forEach(f => {
+        const btn = document.getElementById(`filter-${f}`);
+        if (f === type) {
+          btn.className = 'px-2 py-1 rounded-md font-semibold bg-white text-slate-800 shadow-xs';
+        } else {
+          btn.className = 'px-2 py-1 rounded-md font-medium text-slate-500';
+        }
+      });
+      renderQuoteList();
+    }
+
+    function renderQuoteList() {
+      const container = document.getElementById('quote-list');
+      container.innerHTML = '';
+
+      const filtered = quotes.filter(q => {
+        if (activeFilter === 'all') return true;
+        return q.status === activeFilter;
+      });
+
+      if (filtered.length === 0) {
+        container.innerHTML = `
+          <div class="py-8 text-center text-xs text-slate-400">
+            해당 상태의 견적서가 없습니다.
+          </div>
+        `;
+        return;
+      }
+
+      filtered.forEach(q => {
+        const isDone = q.status === 'done';
+        const card = document.createElement('div');
+        card.className = 'p-3.5 rounded-xl border border-slate-200/90 hover:border-blue-300 transition-all bg-white shadow-xs space-y-2';
+        card.innerHTML = `
+          <div class="flex items-start justify-between">
+            <div>
+              <div class="flex items-center gap-2">
+                <span class="font-bold text-slate-900 text-sm">${q.customerName}</span>
+                <span class="text-[10px] px-2 py-0.5 rounded-full font-semibold ${isDone ? 'bg-emerald-100 text-emerald-700' : 'bg-amber-100 text-amber-700'}">
+                  ${isDone ? '입금완료' : '시공예정/미수'}
+                </span>
+                ${q.hasSplit ? '<span class="text-[9px] bg-indigo-50 text-indigo-600 px-1.5 py-0.5 rounded border border-indigo-200 font-medium">분할결제</span>' : ''}
+              </div>
+              <div class="text-[11px] text-slate-500 mt-0.5">
+                <span>작업일: ${q.serviceDate || '미정'}</span> · 
+                <span>${q.items.length}개 품목 (${q.items[0]?.name || ''}${q.items.length > 1 ? ` 외 ${q.items.length - 1}건` : ''})</span>
+              </div>
+            </div>
+            <div class="text-right">
+              <div class="text-sm font-black text-slate-900">${q.total.toLocaleString()}원</div>
+              <div class="text-[10px] text-slate-400">${q.id}</div>
+            </div>
+          </div>
+
+          <div class="flex items-center justify-between pt-2 border-t border-slate-100 text-xs">
+            <button onclick="toggleQuoteStatus('${q.id}')" class="text-[11px] font-semibold px-2.5 py-1 rounded-lg border ${isDone ? 'border-amber-300 text-amber-700 bg-amber-50 hover:bg-amber-100' : 'border-emerald-300 text-emerald-700 bg-emerald-50 hover:bg-emerald-100'} transition-colors">
+              ${isDone ? '미수금으로 변경' : '✓ 입금완료 처리'}
+            </button>
+            <div class="flex items-center gap-1.5">
+              <button onclick="viewExistingQuote('${q.id}')" class="text-blue-600 hover:text-blue-800 font-semibold text-[11px] px-2 py-1 rounded bg-blue-50 hover:bg-blue-100 flex items-center gap-1">
+                <i data-lucide="eye" class="w-3 h-3"></i> 보기/전송
+              </button>
+              <button onclick="deleteQuote('${q.id}')" class="text-slate-400 hover:text-rose-500 p-1" title="삭제">
+                <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
+              </button>
+            </div>
+          </div>
+        `;
+        container.appendChild(card);
+      });
+      lucide.createIcons();
+    }
+
+    function toggleQuoteStatus(id) {
+      const q = quotes.find(item => item.id === id);
+      if (q) {
+        q.status = q.status === 'done' ? 'pending' : 'done';
+        saveQuotes();
+        renderDashboard();
+        showToast(q.status === 'done' ? '입금완료 처리되었습니다.' : '미수금 상태로 변경되었습니다.');
+      }
+    }
+
+    function deleteQuote(id) {
+      if (confirm('이 견적서를 삭제하시겠습니까?')) {
+        quotes = quotes.filter(item => item.id !== id);
+        saveQuotes();
+        renderDashboard();
+        showToast('견적서가 삭제되었습니다.');
+      }
+    }
+  </script>
+</body>
+</html>

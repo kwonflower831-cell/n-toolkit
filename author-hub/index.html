@@ -1,0 +1,408 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>이우권 · 스릴러 연재 아카이브 | 심야 스릴러 서재</title>
+  <meta name="description" content="네이버 블로그와 포스타입에 연재 중인 스릴러·미스터리 소설 통합 목차 페이지" />
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4090405931385827" crossorigin="anonymous"></script>
+  <style>
+    :root {
+      --bg: #0f1115;
+      --surface: #171a21;
+      --surface-2: #1e232d;
+      --border: #2a303d;
+      --text: #eef1f6;
+      --muted: #9aa3b2;
+      --accent: #e05a47;
+      --accent-soft: rgba(224, 90, 71, 0.14);
+      --green: #3ecf8e;
+      --green-soft: rgba(62, 207, 142, 0.14);
+      --blue: #60a5fa;
+      --blue-soft: rgba(96, 165, 250, 0.14);
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, "Pretendard", "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
+      line-height: 1.65;
+    }
+    .wrap {
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 40px 20px 72px;
+    }
+    header {
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 24px;
+      margin-bottom: 28px;
+    }
+    .eyebrow {
+      display: inline-block;
+      font-size: 0.8rem;
+      letter-spacing: 0.06em;
+      color: var(--accent);
+      background: var(--accent-soft);
+      padding: 4px 10px;
+      border-radius: 999px;
+      margin-bottom: 10px;
+      font-weight: 600;
+    }
+    h1 {
+      margin: 0 0 8px;
+      font-size: 1.9rem;
+      line-height: 1.25;
+    }
+    .lead {
+      margin: 0 0 18px;
+      color: var(--muted);
+      font-size: 0.98rem;
+    }
+    .channel-links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 9px 14px;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      background: var(--surface);
+      color: var(--text);
+      text-decoration: none;
+      font-size: 0.9rem;
+      font-weight: 600;
+      transition: border-color 0.15s ease, background 0.15s ease;
+    }
+    .btn:hover {
+      border-color: var(--accent);
+      background: var(--surface-2);
+    }
+    .btn.primary {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: #fff;
+    }
+    .btn.primary:hover {
+      filter: brightness(1.08);
+    }
+    h2.section-title {
+      font-size: 1.15rem;
+      margin: 32px 0 14px;
+      color: var(--text);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 16px;
+    }
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 20px;
+    }
+    .card-top {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+    .card h3 {
+      margin: 0;
+      font-size: 1.22rem;
+    }
+    .badges {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+    .badge {
+      font-size: 0.78rem;
+      padding: 3px 9px;
+      border-radius: 999px;
+      font-weight: 600;
+    }
+    .badge.ongoing { background: var(--accent-soft); color: var(--accent); }
+    .badge.done { background: var(--green-soft); color: var(--green); }
+    .badge.platform { background: var(--blue-soft); color: var(--blue); }
+    .desc {
+      margin: 0 0 14px;
+      color: var(--muted);
+      font-size: 0.94rem;
+    }
+    .actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+    details {
+      border-top: 1px solid var(--border);
+      padding-top: 12px;
+      margin-top: 8px;
+    }
+    summary {
+      cursor: pointer;
+      font-size: 0.88rem;
+      color: var(--muted);
+      font-weight: 600;
+    }
+    summary:hover { color: var(--text); }
+    .chap-list {
+      list-style: none;
+      padding: 10px 0 0;
+      margin: 0;
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
+      gap: 8px;
+    }
+    .chap-list a {
+      display: block;
+      padding: 7px 10px;
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      color: var(--text);
+      text-decoration: none;
+      font-size: 0.85rem;
+    }
+    .chap-list a:hover {
+      border-color: var(--accent);
+    }
+    footer {
+      margin-top: 44px;
+      padding-top: 20px;
+      border-top: 1px solid var(--border);
+      color: var(--muted);
+      font-size: 0.84rem;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      gap: 10px;
+    }
+    footer a { color: var(--muted); }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <span class="eyebrow">THRILLER · MYSTERY ARCHIVE</span>
+      <h1>이우권 연재 소설 아카이브</h1>
+      <p class="lead">현실적인 긴장과 심리전, 소리·침묵의 공포를 중심으로 쓰는 오리지널 스릴러 연재 목록입니다.</p>
+      <div class="channel-links">
+        <a class="btn primary" href="https://blog.naver.com/kwonflower58" target="_blank" rel="noopener">네이버 블로그 바로가기</a>
+        <a class="btn" href="https://www.postype.com/@kwonflower-story" target="_blank" rel="noopener">포스타입 · 심야 스릴러 서재</a>
+        <a class="btn" href="https://www.postype.com/@kwonflower-story/request/23600158" target="_blank" rel="noopener">단편 소설 리퀘스트</a>
+        <a class="btn" href="https://kwonflower831-cell.github.io/">N-Toolkit 유틸리티 포털</a>
+      </div>
+    </header>
+
+    <h2 class="section-title">네이버 블로그 연재작</h2>
+    <section class="grid">
+      <article class="card">
+        <div class="card-top">
+          <h3>《증거물 4호》</h3>
+          <div class="badges">
+            <span class="badge platform">네이버 블로그</span>
+            <span class="badge ongoing">연재 중 (총 12장 예정 / 1~5장 공개)</span>
+          </div>
+        </div>
+        <p class="desc">보존 기한 만료로 소각장 폐기를 앞둔 새벽 2시 10분, 지하 2층 종합증거물보관실에서 3년 전 추락사 피해자의 스마트워치 '증거물 4호'가 켜지며 시작되는 경찰 서스펜스 스릴러.</p>
+        <div class="actions">
+          <a class="btn primary" href="https://blog.naver.com/kwonflower58/224477505853" target="_blank" rel="noopener">1장부터 읽기</a>
+          <a class="btn" href="https://blog.naver.com/kwonflower58/224477595719" target="_blank" rel="noopener">최신화(5장) 읽기</a>
+          <a class="btn" href="https://blog.naver.com/kwonflower58/224477583107" target="_blank" rel="noopener">작품 안내·전체 목차</a>
+        </div>
+        <details>
+          <summary>공개 회차 바로가기 (1장 ~ 5장)</summary>
+          <ul class="chap-list">
+            <li><a href="https://blog.naver.com/kwonflower58/224477505853" target="_blank" rel="noopener">1장. 차가운 상자</a></li>
+            <li><a href="https://blog.naver.com/kwonflower58/224477507266" target="_blank" rel="noopener">2장. 지워진 47초</a></li>
+            <li><a href="https://blog.naver.com/kwonflower58/224477508802" target="_blank" rel="noopener">3장. 반출 명령</a></li>
+            <li><a href="https://blog.naver.com/kwonflower58/224477581658" target="_blank" rel="noopener">4장. 봉인 확인</a></li>
+            <li><a href="https://blog.naver.com/kwonflower58/224477595719" target="_blank" rel="noopener">5장. 사라진 5호</a></li>
+          </ul>
+        </details>
+      </article>
+
+      <article class="card">
+        <div class="card-top">
+          <h3>《유품》</h3>
+          <div class="badges">
+            <span class="badge platform">네이버 블로그</span>
+            <span class="badge done">완결 (총 12장)</span>
+          </div>
+        </div>
+        <p class="desc">고독사 현장을 치우는 유품정리사 서해진이 냉장고 뒤에서 열두 명의 이름과 날짜가 적힌 쪽지를 발견하며 시작되는 추적 스릴러.</p>
+        <div class="actions">
+          <a class="btn primary" href="https://blog.naver.com/kwonflower58/224468217040" target="_blank" rel="noopener">1장부터 읽기</a>
+          <a class="btn" href="https://blog.naver.com/kwonflower58/224474206761" target="_blank" rel="noopener">12장(완결) 읽기</a>
+          <a class="btn" href="https://blog.naver.com/kwonflower58/224468231033" target="_blank" rel="noopener">작품 안내·전체 목차</a>
+        </div>
+        <details>
+          <summary>완결 전 회차 바로가기 (1장 ~ 12장)</summary>
+          <ul class="chap-list">
+            <li><a href="https://blog.naver.com/kwonflower58/224468217040" target="_blank" rel="noopener">1장. 냉장고 뒤</a></li>
+            <li><a href="https://blog.naver.com/kwonflower58/224468245875" target="_blank" rel="noopener">2장. 치우는 사람</a></li>
+            <li><a href="https://blog.naver.com/kwonflower58/224468270708" target="_blank" rel="noopener">3장. 열쇠 번호</a></li>
+            <li><a href="https://blog.naver.com/kwonflower58/224468285867" target="_blank" rel="noopener">4장. 번진 이름</a></li>
+            <li><a href="https://blog.naver.com/kwonflower58/224468850864" target="_blank" rel="noopener">5장. 두 번, 쉬고, 두 번</a></li>
+            <li><a href="https://blog.naver.com/kwonflower58/224468866173" target="_blank" rel="noopener">6장. 아직</a></li>
+            <li><a href="https://blog.naver.com/kwonflower58/224470123011" target="_blank" rel="noopener">7장. 먼지 없는 네모</a></li>
+            <li><a href="https://blog.naver.com/kwonflower58/224470196843" target="_blank" rel="noopener">8장. 예정일</a></li>
+            <li><a href="https://blog.naver.com/kwonflower58/224473588453" target="_blank" rel="noopener">9장. 가계부</a></li>
+            <li><a href="https://blog.naver.com/kwonflower58/224473975238" target="_blank" rel="noopener">10장. 대질</a></li>
+            <li><a href="https://blog.naver.com/kwonflower58/224474204234" target="_blank" rel="noopener">11장. 산길의 창고</a></li>
+            <li><a href="https://blog.naver.com/kwonflower58/224474206761" target="_blank" rel="noopener">12장. 살아남은 손 (끝)</a></li>
+          </ul>
+        </details>
+      </article>
+
+      <article class="card">
+        <div class="card-top">
+          <h3>《마지막 통화》</h3>
+          <div class="badges">
+            <span class="badge platform">네이버 블로그</span>
+            <span class="badge done">완결 (총 15장)</span>
+          </div>
+        </div>
+        <p class="desc">새벽 2시 14분, 119 상황실로 걸려 온 말없는 전화. 발신 위치는 3년 전 동생이 세상을 떠난 바로 그 집이었다.</p>
+        <div class="actions">
+          <a class="btn primary" href="https://blog.naver.com/kwonflower58/224465763308" target="_blank" rel="noopener">1장부터 읽기</a>
+          <a class="btn" href="https://blog.naver.com/kwonflower58/224474208719" target="_blank" rel="noopener">15장(완결) 읽기</a>
+          <a class="btn" href="https://blog.naver.com/kwonflower58/224466922878" target="_blank" rel="noopener">작품 안내·전체 목차</a>
+        </div>
+        <details>
+          <summary>완결 회차 바로가기 (1~15장 주요 회차)</summary>
+          <ul class="chap-list">
+            <li><a href="https://blog.naver.com/kwonflower58/224465763308" target="_blank" rel="noopener">1장. 새벽 2시 14분</a></li>
+            <li><a href="https://blog.naver.com/kwonflower58/224465796283" target="_blank" rel="noopener">2장. 빈집</a></li>
+            <li><a href="https://blog.naver.com/kwonflower58/224465828480" target="_blank" rel="noopener">3장. 주소의 주인</a></li>
+            <li><a href="https://blog.naver.com/kwonflower58/224465873062" target="_blank" rel="noopener">4장. 유품 상자</a></li>
+            <li><a href="https://blog.naver.com/kwonflower58/224465956812" target="_blank" rel="noopener">5장. 두 번의 노크</a></li>
+            <li><a href="https://blog.naver.com/kwonflower58/224465958142" target="_blank" rel="noopener">6장. 복사본</a></li>
+            <li><a href="https://blog.naver.com/kwonflower58/224466594586" target="_blank" rel="noopener">7장. 누리숲요양원</a></li>
+            <li><a href="https://blog.naver.com/kwonflower58/224466745614" target="_blank" rel="noopener">8장. 열한 번의 물방울</a></li>
+            <li><a href="https://blog.naver.com/kwonflower58/224467156601" target="_blank" rel="noopener">9장. 서명</a></li>
+            <li><a href="https://blog.naver.com/kwonflower58/224467202907" target="_blank" rel="noopener">10장. 2시의 휴게</a></li>
+            <li><a href="https://blog.naver.com/kwonflower58/224468181003" target="_blank" rel="noopener">11장. 11시 40분</a></li>
+            <li><a href="https://blog.naver.com/kwonflower58/224468197855" target="_blank" rel="noopener">12장. 비상계단</a></li>
+            <li><a href="https://blog.naver.com/kwonflower58/224468214233" target="_blank" rel="noopener">13장. 덫</a></li>
+            <li><a href="https://blog.naver.com/kwonflower58/224473587062" target="_blank" rel="noopener">14장. B-3</a></li>
+            <li><a href="https://blog.naver.com/kwonflower58/224474208719" target="_blank" rel="noopener">15장. 마지막 통화 (끝)</a></li>
+          </ul>
+        </details>
+      </article>
+
+      <article class="card">
+        <div class="card-top">
+          <h3>《투명》</h3>
+          <div class="badges">
+            <span class="badge platform">네이버 블로그</span>
+            <span class="badge done">완결 (총 15장)</span>
+          </div>
+        </div>
+        <p class="desc">임상시험 부작용으로 전신이 투명해진 연구원 강도현. 14일 안에 시력을 잃기 전, 회사의 비밀과 마주해야 하는 서스펜스.</p>
+        <div class="actions">
+          <a class="btn primary" href="https://blog.naver.com/kwonflower58/224465357182" target="_blank" rel="noopener">1장부터 읽기</a>
+          <a class="btn" href="https://blog.naver.com/kwonflower58/224465564109" target="_blank" rel="noopener">15장(완결) 읽기</a>
+        </div>
+        <details>
+          <summary>완결 전 회차 바로가기 (1장 ~ 15장)</summary>
+          <ul class="chap-list">
+            <li><a href="https://blog.naver.com/kwonflower58/224465357182" target="_blank" rel="noopener">1장. 거울에 아무것도 없었다</a></li>
+            <li><a href="https://blog.naver.com/kwonflower58/224465361137" target="_blank" rel="noopener">2장. 이천 원어치의 죄</a></li>
+            <li><a href="https://blog.naver.com/kwonflower58/224465463966" target="_blank" rel="noopener">3장. 아무도 없는 건물</a></li>
+            <li><a href="https://blog.naver.com/kwonflower58/224465473687" target="_blank" rel="noopener">4장. 창문 너머</a></li>
+            <li><a href="https://blog.naver.com/kwonflower58/224465487489" target="_blank" rel="noopener">5장. 팔십만 원</a></li>
+            <li><a href="https://blog.naver.com/kwonflower58/224465501751" target="_blank" rel="noopener">6장. 민재의 계획</a></li>
+            <li><a href="https://blog.naver.com/kwonflower58/224465502463" target="_blank" rel="noopener">7장. 남의 집 금고</a></li>
+            <li><a href="https://blog.naver.com/kwonflower58/224465503077" target="_blank" rel="noopener">8장. 새벽 두 시의 복도</a></li>
+            <li><a href="https://blog.naver.com/kwonflower58/224465503696" target="_blank" rel="noopener">9장. 흰 가루</a></li>
+            <li><a href="https://blog.naver.com/kwonflower58/224465504296" target="_blank" rel="noopener">10장. 냄새</a></li>
+            <li><a href="https://blog.naver.com/kwonflower58/224465558418" target="_blank" rel="noopener">11장. 문 앞의 목소리</a></li>
+            <li><a href="https://blog.naver.com/kwonflower58/224465559627" target="_blank" rel="noopener">12장. 흰 지팡이</a></li>
+            <li><a href="https://blog.naver.com/kwonflower58/224465560940" target="_blank" rel="noopener">13장. 빗속의 옥상</a></li>
+            <li><a href="https://blog.naver.com/kwonflower58/224465562509" target="_blank" rel="noopener">14장. 한 병의 값</a></li>
+            <li><a href="https://blog.naver.com/kwonflower58/224465564109" target="_blank" rel="noopener">15장. 손 (끝)</a></li>
+          </ul>
+        </details>
+      </article>
+    </section>
+
+    <h2 class="section-title">포스타입 연재 · 리퀘스트</h2>
+    <section class="grid">
+      <article class="card">
+        <div class="card-top">
+          <h3>《침묵의 방》</h3>
+          <div class="badges">
+            <span class="badge platform">포스타입 · 심야 스릴러 서재</span>
+            <span class="badge done">총 8화 완결 시리즈</span>
+          </div>
+        </div>
+        <p class="desc">폭설로 고립된 산속 폐쇄병동 새벽 1시 15분. 10년간 침묵하던 301호 환자가 "새벽 2시 15분에 그가 날 죽이러 와요"라는 첫마디를 남긴 직후 병동 전체 전원이 차단된다.</p>
+        <div class="actions">
+          <a class="btn primary" href="https://www.postype.com/@kwonflower-story/series/1714584" target="_blank" rel="noopener">시리즈 정주행하기</a>
+          <a class="btn" href="https://www.postype.com/@kwonflower-story/post/23622452" target="_blank" rel="noopener">1화부터 읽기</a>
+        </div>
+        <details>
+          <summary>회차 바로가기 (1화 ~ 4화)</summary>
+          <ul class="chap-list">
+            <li><a href="https://www.postype.com/@kwonflower-story/post/23622452" target="_blank" rel="noopener">1화. 01:15, 첫 번째 목소리</a></li>
+            <li><a href="https://www.postype.com/@kwonflower-story/post/23622461" target="_blank" rel="noopener">2화. 01:25, 닫힌 요람</a></li>
+            <li><a href="https://www.postype.com/@kwonflower-story/post/23622779" target="_blank" rel="noopener">3화. 01:38, 차트 2016-11</a></li>
+            <li><a href="https://www.postype.com/@kwonflower-story/post/23622841" target="_blank" rel="noopener">4화. 01:48, 피 묻은 열쇠</a></li>
+          </ul>
+        </details>
+      </article>
+
+      <article class="card">
+        <div class="card-top">
+          <h3>《체크아웃 11:00》</h3>
+          <div class="badges">
+            <span class="badge platform">포스타입 & 네이버 블로그</span>
+            <span class="badge done">완결 (총 2화)</span>
+          </div>
+        </div>
+        <p class="desc">체크아웃까지 남은 15분, 밀실이 된 객실 안에서 드러나는 오빠의 억울한 죽음과 시공사 비리를 둘러싼 숨 막히는 심리 대치극.</p>
+        <div class="actions">
+          <a class="btn primary" href="https://www.postype.com/@kwonflower-story/series/1713565" target="_blank" rel="noopener">포스타입 시리즈 보기</a>
+          <a class="btn" href="https://www.postype.com/@kwonflower-story/post/23605627" target="_blank" rel="noopener">1화 읽기(포스타입)</a>
+          <a class="btn" href="https://blog.naver.com/kwonflower58/224475161072" target="_blank" rel="noopener">네이버 블로그에서 읽기</a>
+        </div>
+      </article>
+
+      <article class="card">
+        <div class="card-top">
+          <h3>《마지막 방송》</h3>
+          <div class="badges">
+            <span class="badge platform">포스타입 · 심야 스릴러 서재</span>
+            <span class="badge done">완결 (총 6화)</span>
+          </div>
+        </div>
+        <p class="desc">02:00 온에어부터 03:40 최후의 생중계까지, 밀실과 심리전이 교차하는 심야 스릴러 시리즈.</p>
+        <div class="actions">
+          <a class="btn primary" href="https://www.postype.com/@kwonflower-story/series/1713268" target="_blank" rel="noopener">시리즈 정주행하기</a>
+          <a class="btn" href="https://www.postype.com/@kwonflower-story/request/23600158" target="_blank" rel="noopener">단편 소설 리퀘스트 신청</a>
+        </div>
+      </article>
+    </section>
+
+    <footer>
+      <span>© 이우권 · 심야 스릴러 서재</span>
+      <span>연재 문의 및 리퀘스트: <a href="https://www.postype.com/@kwonflower-story" target="_blank" rel="noopener">postype.com/@kwonflower-story</a></span>
+    </footer>
+  </div>
+</body>
+</html>
